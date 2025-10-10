@@ -14,6 +14,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "MySelf",
   description: "Developed by Nicholas Tan",
+  icons: {
+    icon: "/myself.png",
+  },
 };
 
 export default function RootLayout({ children }) {
