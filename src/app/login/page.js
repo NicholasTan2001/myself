@@ -4,10 +4,12 @@ import Image from "next/image";
 import FormInput from "../components/FormInput";
 import ButtonA from "../components/ButtonA";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
 
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const router = useRouter();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -15,7 +17,7 @@ export default function Login() {
 
   return (
 
-    <div className="flex justify-center items-center min-h-screen">
+    <div className="flex justify-center items-center min-h-screen p-10">
       {/* Animated card */}
       <motion.div
         initial={{ opacity: 0, y: 100 }}
@@ -57,15 +59,16 @@ export default function Login() {
             type="submit"
             className="mt-5"
           >
-            LOGIN
+            Login
           </ButtonA>
         </form>
 
         <ButtonA
-          type="submit"
+          type="button"
           className="mt-5"
+          onClick={() => router.push('/register')}
         >
-          REGISTER
+          Register Now
         </ButtonA>
 
       </motion.div>
