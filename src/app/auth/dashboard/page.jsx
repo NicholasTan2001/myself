@@ -3,8 +3,8 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import LogoutButton from '../../components/LogoutButton';
 
-export default function Dashboard() {
-    const cookieStore = cookies();
+export default async function Dashboard() {
+    const cookieStore = await cookies();
     const token = cookieStore.get('token')?.value;
 
     try {
