@@ -51,7 +51,7 @@ export default function Register() {
 
         // Submit to API
         try {
-            const res = await fetch('/api/user', {
+            const res = await fetch('/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email, password, confirmPassword: formData.confirmPassword }),
@@ -78,7 +78,7 @@ export default function Register() {
         <div className="flex justify-center items-center min-h-screen p-10">
             {/* Animated card */}
             <motion.div
-                initial={{ opacity: 0, y: 100 }}
+                initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: "easeOut" }}
                 className="bg-gray-200 bg-opacity-90 rounded-2xl shadow-[0_0_25px_rgba(255,255,255,0.8)] p-10 text-center"
@@ -94,7 +94,7 @@ export default function Register() {
                 />
 
                 {/* Welcome Text */}
-                <h1 className="text-3xl font-bold text-gray-800 mb-7">Register to MySelf</h1>
+                <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-7 max-w-full truncate">Register to MySelf</h1>
 
                 {/* Register Form */}
                 <form onSubmit={handleSubmit}>
