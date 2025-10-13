@@ -4,7 +4,9 @@ import { useState } from "react";
 export default function FormInput({ label, type, name, placeholder, onChange }) {
     const [focused, setFocused] = useState(false);
 
+    {/* Form */ }
     return (
+
         <div className="flex flex-col w-full mb-5">
             <label
                 htmlFor={name}

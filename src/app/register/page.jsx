@@ -9,7 +9,6 @@ export default async function Register() {
 
     if (token) {
 
-        jwt.verify(token, process.env.JWT_SECRET || "dev-secret");
         return redirect("/auth/dashboard");
 
     } else {

@@ -3,6 +3,7 @@ import React from "react";
 
 export default function ButtonA({ children, className = "", ...props }) {
 
+    {/* Button A (blue-300) */ }
     return (
         <button
             {...props}
