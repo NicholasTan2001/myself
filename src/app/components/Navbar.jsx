@@ -2,21 +2,21 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import LogoutButton from "./LogoutButton";
 
 export default function Navbar() {
-    const [activeLink, setActiveLink] = useState("");
     const [menuOpen, setMenuOpen] = useState(false);
-    const [showNav, setShowNav] = useState(false); // Navbar animation
-    const [showMenu, setShowMenu] = useState(false); // Mobile menu animation
+    const [showNav, setShowNav] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
+    const pathname = usePathname();
 
     useEffect(() => {
-        setShowNav(true); // fade-down navbar
+        setShowNav(true);
     }, []);
 
     useEffect(() => {
         if (menuOpen) {
-            // Trigger animation slightly after menuOpen
             const timer = setTimeout(() => setShowMenu(true), 10);
             return () => clearTimeout(timer);
         } else {
@@ -24,9 +24,11 @@ export default function Navbar() {
         }
     }, [menuOpen]);
 
-    const linkClass = (linkName) => `
+    const isActive = (link) => pathname.startsWith(link);
+
+    const linkClass = (linkPath) => `
         relative px-4 py-2 overflow-hidden rounded group font-medium transition-colors duration-800
-        ${activeLink === linkName ? "text-blue-300" : "text-gray-400"}
+        ${isActive(linkPath) ? "text-blue-300" : "text-gray-400"}
     `;
 
     const innerTextClass = `
@@ -61,22 +63,19 @@ export default function Navbar() {
                     </div>
 
                     <div className="hidden md:flex items-center space-x-2">
-                        <Link
-                            href="/auth/dashboard"
-                            onClick={() => setActiveLink("dashboard")}
-                            className={linkClass("dashboard")}
-                        >
+                        <Link href="/auth/dashboard" className={linkClass("/auth/dashboard")}>
                             <span className={rippleSpan}></span>
                             <span className={innerTextClass}>Dashboard</span>
                         </Link>
 
-                        <Link
-                            href="/about"
-                            onClick={() => setActiveLink("about")}
-                            className={linkClass("about")}
-                        >
+                        <Link href="/about" className={linkClass("/about")}>
                             <span className={rippleSpan}></span>
                             <span className={innerTextClass}>About Us</span>
+                        </Link>
+
+                        <Link href="/auth/myprofile" className={linkClass("/auth/myprofile")}>
+                            <span className={rippleSpan}></span>
+                            <span className={innerTextClass}>My Profile</span>
                         </Link>
                     </div>
                 </div>
@@ -115,8 +114,8 @@ export default function Navbar() {
             >
                 <Link
                     href="/auth/dashboard"
-                    onClick={() => { setActiveLink("dashboard"); setMenuOpen(false); }}
-                    className={linkClass("dashboard")}
+                    onClick={() => setMenuOpen(false)}
+                    className={linkClass("/auth/dashboard")}
                 >
                     <span className={rippleSpan}></span>
                     <span className={innerTextClass}>Dashboard</span>
@@ -124,14 +123,23 @@ export default function Navbar() {
 
                 <Link
                     href="/about"
-                    onClick={() => { setActiveLink("about"); setMenuOpen(false); }}
-                    className={linkClass("about")}
+                    onClick={() => setMenuOpen(false)}
+                    className={linkClass("/about")}
                 >
                     <span className={rippleSpan}></span>
                     <span className={innerTextClass}>About Us</span>
                 </Link>
 
-                <div className="p-5 ml-20 mr-20 flex flex justify-center">
+                <Link
+                    href="/auth/myprofile"
+                    onClick={() => setMenuOpen(false)}
+                    className={linkClass("/auth/myprofile")}
+                >
+                    <span className={rippleSpan}></span>
+                    <span className={innerTextClass}>My Profile</span>
+                </Link>
+
+                <div className="p-5 ml-20 mr-20 flex justify-center">
                     <LogoutButton />
                 </div>
             </div>

@@ -1,4 +1,3 @@
-import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import DashboardPage from "../../folder/dashboard";

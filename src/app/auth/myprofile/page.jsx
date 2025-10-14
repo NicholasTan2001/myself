@@ -1,18 +1,17 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import RegisterPage from "../folder/register";
+import MyProfilePage from "../../folder/myprofile";
 
-export default async function Register() {
+export default async function MyProfile() {
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
 
     if (token) {
 
-        return redirect("/auth/dashboard");
+        return <MyProfilePage />;
 
     } else {
 
-        return <RegisterPage />;
+        return redirect("/login");
     }
-
 }

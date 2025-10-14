@@ -5,7 +5,7 @@ import Timeout from "../components/Timeout";
 import Loading from "../components/Loading";
 import Footer from "../components/Footer";
 
-export default function DashboardPage() {
+export default function MyProfilePage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -28,7 +28,7 @@ export default function DashboardPage() {
 
             <div className="text-center mt-10">
                 <h1 className="text-2xl font-bold mb-4">Logged in</h1>
-                <p className="text-gray-600">Welcome to your dashboard!</p>
+                <p className="text-gray-600">Welcome to your My Profile!</p>
             </div>
 
             <Footer />

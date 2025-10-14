@@ -23,7 +23,7 @@ export default function Timeout() {
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white rounded-lg p-6 max-w-sm w-full shadow-[0_0_25px_rgba(255,255,255,0.8)] text-center">
                         <p className="text-black font-semibold">
-                            Your session will expire soon. Redirecting to login...
+                            Your session will expire soon. Redirecting to login session...
                         </p>
                     </div>
                 </div>
