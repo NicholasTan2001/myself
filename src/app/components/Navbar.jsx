@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import LogoutButton from "./LogoutButton";
+import FontA from "./FontA";
 
 export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -59,10 +60,12 @@ export default function Navbar() {
                             height={45}
                             className="rounded-full"
                         />
-                        <h1 className="text-2xl font-semibold tracking-wide">MySelf</h1>
+                        <FontA>
+                            <h1 className="text-2xl font-semibold tracking-wide">MySelf</h1>
+                        </FontA>
                     </div>
 
-                    <div className="hidden md:flex items-center space-x-2">
+                    <div className="hidden lg:flex items-center space-x-2">
                         <Link href="/auth/dashboard" className={linkClass("/auth/dashboard")}>
                             <span className={rippleSpan}></span>
                             <span className={innerTextClass}>Dashboard</span>
@@ -82,10 +85,10 @@ export default function Navbar() {
 
                 {/* Right side */}
                 <div className="flex items-center">
-                    <div className="hidden md:block">
+                    <div className="hidden lg:block">
                         <LogoutButton />
                     </div>
-                    <div className="md:hidden">
+                    <div className="lg:hidden">
                         <button
                             onClick={() => setMenuOpen(!menuOpen)}
                             className="text-gray-500 focus:outline-none"
@@ -107,7 +110,7 @@ export default function Navbar() {
             {/* Mobile Menu */}
             <div
                 className={`
-                    md:hidden px-5 flex flex-col space-y-1 bg-white shadow-[0_0_25px_rgba(255,255,255,0.8)]
+                    lg:hidden px-5 flex flex-col space-y-1 bg-white shadow-[0_0_25px_rgba(255,255,255,0.8)]
                     transition-all duration-600 ease-out overflow-hidden
                     ${menuOpen && showMenu ? "opacity-100 max-h-80 translate-y-0" : "opacity-0 max-h-0 -translate-y-5"}
                 `}

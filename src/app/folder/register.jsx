@@ -150,7 +150,7 @@ export default function RegisterPage() {
 
                     <ButtonA
                         type="submit"
-                        className="mt-5"
+                        className="mt-5 w-full"
                     >
                         Register and Login Now
                     </ButtonA>

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-export default function FormInput({ label, type, name, placeholder, onChange }) {
+export default function FormInput({ label, type, name, value, placeholder, onChange }) {
     const [focused, setFocused] = useState(false);
 
     {/* Form */ }
@@ -20,6 +20,7 @@ export default function FormInput({ label, type, name, placeholder, onChange }) 
                 id={name}
                 name={name}
                 type={type}
+                value={value}
                 placeholder={placeholder}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}

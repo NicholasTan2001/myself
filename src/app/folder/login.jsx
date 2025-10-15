@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import FormInput from "../components/FormInput";
 import ButtonA from "../components/ButtonA";
+import FontA from "../components/FontA";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -79,7 +80,9 @@ export default function LoginPage() {
                 />
 
                 {/* Welcome Text */}
-                <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-7 max-w-full truncate">Continue to MySelf</h1>
+                <FontA>
+                    <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-7 max-w-full truncate">Continue to MySelf</h1>
+                </FontA>
 
                 {/* Login Form */}
                 <form onSubmit={handleSubmit}>
@@ -107,7 +110,7 @@ export default function LoginPage() {
 
                     <ButtonA
                         type="submit"
-                        className="mt-5"
+                        className="mt-5 w-full"
                     >
                         Login
                     </ButtonA>
@@ -115,7 +118,7 @@ export default function LoginPage() {
 
                 <ButtonA
                     type="button"
-                    className="mt-5"
+                    className="mt-5 w-full"
                     onClick={() => router.push('/register')}
                 >
                     Register Now
