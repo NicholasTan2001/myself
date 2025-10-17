@@ -21,4 +21,16 @@ model User {
   password   String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  dailyLists DailyList[]
+}
+
+model DailyList {
+  id        Int      @id @default(autoincrement())
+  name      String
+  remark    String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

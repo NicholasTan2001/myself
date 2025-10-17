@@ -71,9 +71,9 @@ export default function Navbar() {
                             <span className={innerTextClass}>Dashboard</span>
                         </Link>
 
-                        <Link href="/about" className={linkClass("/about")}>
+                        <Link href="/auth/modification" className={linkClass("/auth/modification")}>
                             <span className={rippleSpan}></span>
-                            <span className={innerTextClass}>About Us</span>
+                            <span className={innerTextClass}>Modification</span>
                         </Link>
 
                         <Link href="/auth/myprofile" className={linkClass("/auth/myprofile")}>
@@ -125,9 +125,9 @@ export default function Navbar() {
                 </Link>
 
                 <Link
-                    href="/about"
+                    href="/auth/modification"
                     onClick={() => setMenuOpen(false)}
-                    className={linkClass("/about")}
+                    className={linkClass("/auth/modification")}
                 >
                     <span className={rippleSpan}></span>
                     <span className={innerTextClass}>About Us</span>
