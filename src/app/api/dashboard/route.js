@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 export async function GET(req) {
     try {
         const token = req.cookies.get("token")?.value;
-
         if (!token) {
             return NextResponse.json({ error: "*No token found" }, { status: 401 });
         }
@@ -14,16 +13,17 @@ export async function GET(req) {
 
         const dailyTasks = await prisma.dailyList.findMany({
             where: { userId: decoded.userId },
-            select: {
-                id: true,
-                name: true,
-                remark: true,
-            },
+            select: { id: true, name: true, remark: true },
         });
 
-        return NextResponse.json({ dailyTasks });
+        const specialTasks = await prisma.specialList.findMany({
+            where: { userId: decoded.userId },
+            select: { id: true, name: true, remark: true },
+        });
+
+        return NextResponse.json({ dailyTasks, specialTasks });
     } catch (error) {
-        console.error("*Error fetching daily tasks:", error);
+        console.error("*Error fetching tasks:", error);
         return NextResponse.json({ error: "*Invalid or expired token" }, { status: 401 });
     }
 }
