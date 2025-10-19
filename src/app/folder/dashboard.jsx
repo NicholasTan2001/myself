@@ -137,7 +137,7 @@ export default function DashboardPage() {
 
                             <div className="flex flex-col items-center justify-center mt-5">
                                 <Image
-                                    src="/no-tasks.png"
+                                    src="/notask.png"
                                     alt="No tasks"
                                     width={120}
                                     height={120}

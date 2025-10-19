@@ -130,7 +130,7 @@ export default function Navbar() {
                     className={linkClass("/auth/modification")}
                 >
                     <span className={rippleSpan}></span>
-                    <span className={innerTextClass}>About Us</span>
+                    <span className={innerTextClass}>Modification</span>
                 </Link>
 
                 <Link

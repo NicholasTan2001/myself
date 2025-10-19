@@ -11,14 +11,33 @@ export async function GET(req) {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET || "dev-secret");
 
+        const today = new Date();
+        const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+        const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+
+        const todayWeek = new Date().toLocaleDateString("en-MY", { weekday: "long" });
+
         const dailyTasks = await prisma.dailyList.findMany({
             where: { userId: decoded.userId },
             select: { id: true, name: true, remark: true },
         });
 
         const specialTasks = await prisma.specialList.findMany({
-            where: { userId: decoded.userId },
-            select: { id: true, name: true, remark: true },
+            where: {
+                userId: decoded.userId,
+                OR: [
+                    {
+                        date: {
+                            gte: startOfDay,
+                            lte: endOfDay,
+                        },
+                    },
+                    {
+                        week: todayWeek,
+                    },
+                ],
+            },
+            select: { id: true, name: true, remark: true, date: true, week: true },
         });
 
         return NextResponse.json({ dailyTasks, specialTasks });

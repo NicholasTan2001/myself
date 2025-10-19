@@ -11,26 +11,38 @@ export async function POST(req) {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET || "dev-secret");
 
-        const { name, remark } = await req.json();
+        const { name, remark, date, week } = await req.json();
 
         if (!name || !remark) {
             return NextResponse.json({ error: "*Name and remark are required" }, { status: 400 });
         }
 
-        const newTask = await prisma.dailyList.create({
+        const validWeek = week === "None" ? null : week?.trim() || null;
+        const validDate = date?.trim() ? new Date(date) : null;
+
+        if (!validDate && !validWeek) {
+            return NextResponse.json({
+                error: "*Please select at least a date or a week.",
+            }, { status: 400 });
+        }
+
+        const newSpecial = await prisma.specialList.create({
             data: {
                 name,
                 remark,
+                date: validDate,
+                week: validWeek,
                 userId: decoded.userId,
             },
         });
 
         return NextResponse.json({
-            message: "*Task added successfully",
-            task: newTask,
+            message: "*Special task added successfully",
+            task: newSpecial,
         });
+
     } catch (error) {
-        console.error("*Error adding daily task:", error);
-        return NextResponse.json({ error: "*Failed to add daily task" }, { status: 500 });
+        console.error("*Error adding special task:", error);
+        return NextResponse.json({ error: "*Failed to add special task" }, { status: 500 });
     }
 }
