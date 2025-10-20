@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import ModificationPage from "../../folder/modification";
 
 export const metadata = {
-    title: "About Us | MySelf",
+    title: "Modification | MySelf",
 };
 
 export default async function Modification() {

@@ -11,6 +11,7 @@ import FormInput from "../components/FormInput";
 import FormDay from "../components/FormDay";
 import ButtonA from "../components/ButtonA";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function ModificationPage() {
     const router = useRouter();
@@ -24,14 +25,54 @@ export default function ModificationPage() {
     const [specialError, setSpecialError] = useState("");
     const [dateError, setDateError] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    const [todos, setTodos] = useState([]);
+    const [specialTodos, setSpecialTodos] = useState([]);
+    const [isSpecial2, setIsSpecial2] = useState(false);
 
     useEffect(() => {
-        const timer = setTimeout(() => setLoading(false), 3000);
+        const timer = setTimeout(() => setHasEntered(true), 4000);
         return () => clearTimeout(timer);
     }, []);
 
     useEffect(() => {
-        const timer = setTimeout(() => setHasEntered(true), 4000);
+        const fetchTasks = async () => {
+            try {
+                const res = await fetch("/api/dailylist");
+                const data = await res.json();
+                if (data.dailyTasks) {
+                    setTodos(data.dailyTasks.map((t, idx) => ({ ...t, index: idx })));
+                } else {
+                    console.error(data.error);
+                }
+            } catch (err) {
+                console.error("Error fetching tasks:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        const timer = setTimeout(fetchTasks, 3000);
+        return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
+        const fetchSpecialTasks = async () => {
+            try {
+                const res = await fetch("/api/speciallist");
+                const data = await res.json();
+                if (data.specialTasks) {
+                    setSpecialTodos(data.specialTasks.map((t, idx) => ({ ...t, index: idx })));
+                } else {
+                    console.error(data.error);
+                }
+            } catch (err) {
+                console.error("Error fetching tasks:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        const timer = setTimeout(fetchSpecialTasks, 3000);
         return () => clearTimeout(timer);
     }, []);
 
@@ -180,16 +221,16 @@ export default function ModificationPage() {
                         )}
 
                         {/* Title + Description */}
-                        <h1 className="font-semibold px-10">
+                        <h1 className="font-semibold text-lg px-10">
                             New To-Do List Request – {isSpecial ? "Special" : "Daily"}
                         </h1>
-                        <p className="text-gray-500 px-10 mb-5">
+                        <p className="text-gray-500 text-lg font-semibold px-10 mb-5">
                             {isSpecial
                                 ? "*Add a new special to-do list with date and week."
                                 : "*Add a new daily to-do list."}
                         </p>
 
-                        {/* Special & Daily Task Form */}
+                        {/*New Special & Daily Task Request Form */}
                         {isSpecial ? (
                             <form onSubmit={handleSubmitSpecial}>
                                 <div className="w-full px-10">
@@ -294,6 +335,145 @@ export default function ModificationPage() {
                                     </ButtonA>
                                 </div>
                             </form>
+                        )}
+                    </motion.div>
+                </AnimatePresence>
+            </div>
+
+            {/* Modification */}
+            <div className="flex justify-center items-center mt-10 mb-10 perspective-[1500px]">
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={isSpecial2 ? "special-list" : "daily-list"}
+                        className="relative bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-15 py-5 text-left w-[80%] lg:w-[700px]"
+                        initial={
+                            hasEntered
+                                ? { opacity: 0, rotateY: isSpecial ? -90 : 90 }
+                                : { opacity: 0, y: 50 }
+                        }
+                        animate={{ opacity: 1, rotateY: 0, y: 0 }}
+                        exit={{
+                            opacity: 0,
+                            rotateY: isSpecial ? -90 : 90,
+                        }}
+                        transition={
+                            hasEntered
+                                ? { duration: 0.4, ease: "easeInOut" }
+                                : { duration: 1, ease: "easeOut" }
+                        }
+                        style={{ transformStyle: "preserve-3d" }}
+                    >
+                        {/* Toggle Buttons */}
+                        {!isSpecial2 ? (
+                            <button
+                                onClick={() => setIsSpecial2(true)}
+                                className="absolute right-5 top-5 text-gray-300 hover:text-blue-300 transition"
+                                title="Switch to Special Tasks"
+                            >
+                                <ChevronRight size={28} />
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => setIsSpecial2(false)}
+                                className="absolute left-5 top-5 text-gray-300 hover:text-blue-300 transition"
+                                title="Back to Daily Tasks"
+                            >
+                                <ChevronLeft size={28} />
+                            </button>
+                        )}
+
+                        {/*Modification Special & Daily Task Form */}
+                        {!isSpecial2 ? (
+                            <>
+                                <h1 className="font-semibold text-lg">Modification Daily To-Do List</h1>
+                                <h1 className="font-semibold text-lg text-gray-500 mb-5">
+                                    *Modify your current daily task
+                                </h1>
+
+                                <div className="mt-5">
+                                    {todos.length > 0 ? (
+                                        <ul className="list-disc">
+                                            {todos.map(({ name, remark, index }) => (
+                                                <li
+                                                    key={index}
+                                                    className="group flex flex-col cursor-pointer 
+                                        hover:bg-blue-100 active:bg-blue-300 active:text-white mb-3 text-md
+                                        hover:shadow-[0_0_10px_rgba(191,219,254,1)] select-none rounded-lg px-3 py-2"
+                                                >
+                                                    <span className="font-semibold">
+                                                        {index + 1}. {name}
+                                                    </span>
+                                                    <div className="text-gray-500 font-semibold text-md mt-1 group-active:text-white">
+                                                        Remark: {remark}
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center mt-5">
+                                            <Image
+                                                src="/notask.png"
+                                                alt="No tasks"
+                                                width={120}
+                                                height={120}
+                                                className="opacity-80"
+                                            />
+                                            <p className="text-gray-400 text-center">No tasks available today.</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <h1 className="font-semibold text-lg">Modification Special To-Do List</h1>
+                                <h1 className="font-semibold text-lg text-gray-500 mb-5">
+                                    *Modify your current special task
+                                </h1>
+
+                                <div className="mt-5">
+                                    {specialTodos.length > 0 ? (
+                                        <ul className="list-disc">
+                                            {specialTodos.map(({ name, remark, index, date, week }) => (
+                                                <li
+                                                    key={index}
+                                                    className="group flex flex-col cursor-pointer 
+                                        hover:bg-blue-100 active:bg-blue-300 active:text-white mb-3 text-md
+                                        hover:shadow-[0_0_10px_rgba(191,219,254,1)] select-none rounded-lg px-3 py-2"
+                                                >
+
+                                                    {date && (
+                                                        <div className="text-red-500 font-semibold group-active:text-white">
+                                                            *{date ? date.split("T")[0] : null}
+                                                        </div>
+                                                    )}
+
+                                                    <div className="text-black font-semibold group-active:text-white">
+                                                        Every {week ? week : null}
+                                                    </div>
+
+                                                    <span className="font-semibold">
+                                                        {index + 1}. {name}
+                                                    </span>
+                                                    <div className="text-gray-500 font-semibold text-md mt-1 group-active:text-white">
+                                                        Remark: {remark}
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center mt-5">
+                                            <Image
+                                                src="/notask.png"
+                                                alt="No tasks"
+                                                width={120}
+                                                height={120}
+                                                className="opacity-80"
+                                            />
+                                            <p className="text-gray-400 text-center">No tasks available today.</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </>
                         )}
                     </motion.div>
                 </AnimatePresence>

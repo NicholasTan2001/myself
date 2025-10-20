@@ -63,12 +63,17 @@ export default function DashboardPage() {
         return a.index - b.index;
     });
 
-    const sortedSpecialTodos = [...specialTodos].sort((a, b) => {
-        const aChecked = specialChecked[a.index] ? 1 : 0;
-        const bChecked = specialChecked[b.index] ? 1 : 0;
-        if (aChecked !== bChecked) return aChecked - bChecked;
-        return a.index - b.index;
-    });
+    const sortedSpecialTodos = [...specialTodos]
+        .sort((a, b) => {
+            const aChecked = specialChecked[a.index] ? 1 : 0;
+            const bChecked = specialChecked[b.index] ? 1 : 0;
+            if (aChecked !== bChecked) return aChecked - bChecked;
+
+            if (a.date && !b.date) return -1;
+            if (!a.date && b.date) return 1;
+
+            return a.index - b.index;
+        });
 
     return (
         <>
@@ -98,8 +103,8 @@ export default function DashboardPage() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 1, ease: "easeOut" }}
                 >
-                    <h1 className="font-semibold">Daily To-Do List</h1>
-                    <h1 className="font-semibold text-gray-500 mb-5">
+                    <h1 className="font-semibold text-lg">Daily To-Do List</h1>
+                    <h1 className="font-semibold text-lg text-gray-500 mb-5">
                         * Daily tasks that need to be completed every day.
                     </h1>
                     <ul className="space-y-3">
@@ -116,7 +121,7 @@ export default function DashboardPage() {
                                 >
                                     <div className="flex justify-between items-center w-full">
                                         <span
-                                            className={`text-black ${checkedItems[index] ? "line-through text-gray-500" : ""}`}
+                                            className={`text-black text-md font-semibold group-active:text-white ${checkedItems[index] ? "line-through text-gray-500" : ""}`}
                                         >
                                             {index + 1}. {name}
                                         </span>
@@ -130,7 +135,7 @@ export default function DashboardPage() {
                                             group-hover:bg-transparent transition"
                                         />
                                     </div>
-                                    <p className="text-gray-500 text-sm mt-1">{remark}</p>
+                                    <p className="text-gray-500 font-semibold text-md mt-1 group-active:text-white">Remark: {remark}</p>
                                 </motion.li>
                             ))
                         ) : (
@@ -143,7 +148,7 @@ export default function DashboardPage() {
                                     height={120}
                                     className="opacity-80"
                                 />
-                                <p className="text-gray-400 text-center">No tasks available today.</p>
+                                <p className="text-gray-400 font-semibold text-center">No tasks available today.</p>
                             </div>
                         )}
                     </ul>
@@ -173,13 +178,13 @@ export default function DashboardPage() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 1, ease: "easeOut" }}
                 >
-                    <h1 className="font-semibold">Special To-Do List</h1>
-                    <h1 className="font-semibold text-gray-500 mb-5">
+                    <h1 className="font-semibold text-lg">Special To-Do List</h1>
+                    <h1 className="font-semibold text-lg text-gray-500 mb-5">
                         * Special tasks that are assigned to certain days.
                     </h1>
                     <ul className="space-y-3">
                         {sortedSpecialTodos.length > 0 ? (
-                            sortedSpecialTodos.map(({ name, remark, index }) => (
+                            sortedSpecialTodos.map(({ name, remark, index, date, week }) => (
                                 <motion.li
                                     key={index}
                                     layout
@@ -189,9 +194,19 @@ export default function DashboardPage() {
                                     hover:bg-blue-100 active:bg-blue-300 active:text-white 
                                     hover:shadow-[0_0_10px_rgba(191,219,254,1)] select-none rounded-lg px-3 py-2"
                                 >
+                                    {date ? (
+                                        <div className="text-red-500 font-semibold group-active:text-white">
+                                            *{date ? date.split("T")[0] : null}
+                                        </div>
+                                    ) : (
+                                        <div className="text-black font-semibold group-active:text-white">
+                                            Every {week ? week : null}
+                                        </div>
+                                    )}
+
                                     <div className="flex justify-between items-center w-full">
                                         <span
-                                            className={`text-black ${specialChecked[index] ? "line-through text-gray-500" : ""
+                                            className={`text-black text-md font-semibold group-active:text-white ${specialChecked[index] ? "line-through text-gray-500" : ""
                                                 }`}
                                         >
                                             {index + 1}. {name}
@@ -206,7 +221,7 @@ export default function DashboardPage() {
                                             group-hover:bg-transparent transition"
                                         />
                                     </div>
-                                    <p className="text-gray-500 text-sm mt-1">{remark}</p>
+                                    <p className="text-gray-500 font-semibold text-md mt-1 group-active:text-white">Remark: {remark}</p>
                                 </motion.li>
                             ))
                         ) : (
@@ -218,7 +233,7 @@ export default function DashboardPage() {
                                     height={120}
                                     className="opacity-80"
                                 />
-                                <p className="text-gray-400 text-center">No tasks available today.</p>
+                                <p className="text-gray-400 font-semibold text-center">No tasks available today.</p>
                             </div>)}
                     </ul>
 
