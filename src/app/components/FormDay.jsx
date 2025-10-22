@@ -7,6 +7,7 @@ export default function FormDay({ label, type = "text", name, value, placeholder
     const isSelect = type === "select";
     const days = ["None", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
+    {/* Day Form */ }
     return (
         <div className="flex flex-col w-full mb-5">
             <label

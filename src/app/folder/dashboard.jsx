@@ -16,9 +16,11 @@ export default function DashboardPage() {
     const [todos, setTodos] = useState([]);
     const [specialTodos, setSpecialTodos] = useState([]);
 
+    {/* Function: check item is checked or not */ }
     const totalChecked = Object.values(checkedItems).filter(Boolean).length;
     const totalSpecialChecked = Object.values(specialChecked).filter(Boolean).length;
 
+    {/* Function: create current date */ }
     const today = new Date().toLocaleDateString("en-MY", {
         weekday: "long",
         year: "numeric",
@@ -26,6 +28,7 @@ export default function DashboardPage() {
         day: "numeric",
     });
 
+    {/* Function: get data from dashboard api */ }
     useEffect(() => {
         const fetchTasks = async () => {
             try {
@@ -48,14 +51,18 @@ export default function DashboardPage() {
         return () => clearTimeout(timer);
     }, []);
 
+    {/* Function: loading page */ }
     if (loading) return <Loading />;
 
+    {/* Function: change the location when daily task is checked */ }
     const handleCheckboxChange = (index) =>
         setCheckedItems((prev) => ({ ...prev, [index]: !prev[index] }));
 
+    {/* Function: change the location when special task is checked */ }
     const handleSpecialCheckboxChange = (index) =>
         setSpecialChecked((prev) => ({ ...prev, [index]: !prev[index] }));
 
+    {/* Function: sort the daily task list */ }
     const sortedTodos = [...todos].sort((a, b) => {
         const aChecked = checkedItems[a.index] ? 1 : 0;
         const bChecked = checkedItems[b.index] ? 1 : 0;
@@ -63,6 +70,7 @@ export default function DashboardPage() {
         return a.index - b.index;
     });
 
+    {/* Function: sort the special task list */ }
     const sortedSpecialTodos = [...specialTodos]
         .sort((a, b) => {
             const aChecked = specialChecked[a.index] ? 1 : 0;
@@ -194,13 +202,15 @@ export default function DashboardPage() {
                                     hover:bg-blue-100 active:bg-blue-300 active:text-white 
                                     hover:shadow-[0_0_10px_rgba(191,219,254,1)] select-none rounded-lg px-3 py-2"
                                 >
-                                    {date ? (
+                                    {date && (
                                         <div className="text-red-500 font-semibold group-active:text-white">
                                             *{date ? date.split("T")[0] : null}
                                         </div>
-                                    ) : (
+                                    )}
+
+                                    {week && week !== "None" && (
                                         <div className="text-black font-semibold group-active:text-white">
-                                            Every {week ? week : null}
+                                            Every {week}
                                         </div>
                                     )}
 
@@ -255,7 +265,6 @@ export default function DashboardPage() {
                     </h2>
                 </motion.div>
             </div>
-
             <Footer />
         </>
     );

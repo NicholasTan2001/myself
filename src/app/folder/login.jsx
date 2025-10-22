@@ -13,21 +13,27 @@ export default function LoginPage() {
     const router = useRouter();
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [submitting, setSubmitting] = useState(false);
 
+    {/* Function: set data in FormData */ }
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    {/* Function: submit user data*/ }
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSubmitting(true);
         const { email, password } = formData;
 
         if (!email || String(email).trim().length === 0) {
             setEmailError('*Email address required');
+            setSubmitting(false);
             return;
         }
         if (!password || String(password).length === 0) {
             setPasswordError('*Password required');
+            setSubmitting(false);
             return;
         }
 
@@ -45,6 +51,7 @@ export default function LoginPage() {
 
             if (res.status === 401) {
                 setPasswordError('*Invalid credentials');
+                setSubmitting(false);
                 return;
             }
 
@@ -107,13 +114,10 @@ export default function LoginPage() {
                         />
                         {passwordError && <p className="text-sm text-red-600 text-center">{passwordError}</p>}
                     </div>
-
-                    <ButtonA
-                        type="submit"
-                        className="mt-5 w-full"
-                    >
-                        Login
+                    <ButtonA type="submit" className="mt-5 w-full" disabled={submitting} >
+                        {submitting ? "Logging..." : "Login"}
                     </ButtonA>
+
                 </form>
 
                 <ButtonA

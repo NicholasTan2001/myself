@@ -2,10 +2,12 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import LoginPage from "../folder/login";
 
+{/* Tab Name */ }
 export const metadata = {
   title: "Login | MySelf",
 };
 
+{/* Token Verification */ }
 export default async function Login() {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;

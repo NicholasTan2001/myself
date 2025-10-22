@@ -8,48 +8,54 @@ import { useRouter } from 'next/navigation';
 
 export default function RegisterPage() {
     const router = useRouter();
-
     const [formData, setFormData] = useState({ name: "", email: "", password: "", confirmPassword: "" });
     const [nameError, setNameError] = useState('');
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [confirmError, setConfirmError] = useState('');
+    const [submitting, setSubmitting] = useState(false);
 
+    {/* Function: set data in FormData */ }
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    {/* Function: submit the form */ }
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSubmitting(true);
+
         const { name, email, password } = formData;
 
-        // Username client-side validation
         if (!name || String(name).trim().length === 0) {
             setNameError('*Username cannot be empty');
+            setSubmitting(false);
             return;
         }
 
-        // Email client-side validation
         const emailStr = String(email || '');
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailStr || !emailRegex.test(emailStr)) {
             setEmailError('*Please enter a valid email');
+            setSubmitting(false);
+
             return;
         }
 
-        // Password client-side validation (min 6 characters)
         if (!password || String(password).length < 6) {
             setPasswordError('*Password must be at least 6 characters');
+            setSubmitting(false);
+
             return;
         }
 
-        // Confirm password match
         if (formData.confirmPassword !== password) {
             setConfirmError('*Passwords do not match');
+            setSubmitting(false);
+
             return;
         }
 
-        // Submit to API
         try {
             const res = await fetch('/api/register', {
                 method: 'POST',
@@ -59,6 +65,8 @@ export default function RegisterPage() {
 
             if (res.status === 409) {
                 setEmailError('*Email already in use');
+                setSubmitting(false);
+
                 return;
             }
 
@@ -148,11 +156,8 @@ export default function RegisterPage() {
                         )}
                     </div>
 
-                    <ButtonA
-                        type="submit"
-                        className="mt-5 w-full"
-                    >
-                        Register and Login Now
+                    <ButtonA type="submit" className="mt-5 w-full" disabled={submitting} >
+                        {submitting ? "Registering..." : "Register Now"}
                     </ButtonA>
                 </form>
 

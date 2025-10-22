@@ -12,10 +12,12 @@ export default function Navbar() {
     const [showMenu, setShowMenu] = useState(false);
     const pathname = usePathname();
 
+    {/* Effect: show the navigation when entering */ }
     useEffect(() => {
         setShowNav(true);
     }, []);
 
+    {/* Effect: menu will show smoothly */ }
     useEffect(() => {
         if (menuOpen) {
             const timer = setTimeout(() => setShowMenu(true), 10);
@@ -25,6 +27,7 @@ export default function Navbar() {
         }
     }, [menuOpen]);
 
+    {/* Functio: show navigating page which connecting with path name*/ }
     const isActive = (link) => pathname.startsWith(link);
 
     const linkClass = (linkPath) => `
@@ -42,6 +45,7 @@ export default function Navbar() {
     `;
 
     return (
+
         <nav
             className={`
                 bg-white font-semibold bg-opacity-90 shadow-[0_0_25px_rgba(255,255,255,0.8)]
@@ -49,6 +53,7 @@ export default function Navbar() {
                 ${showNav ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"}
             `}
         >
+            {/* Website Menu */}
             <div className="max-w-7xl mx-auto px-5 py-2 flex items-center justify-between">
                 {/* Left: Logo + Links */}
                 <div className="flex items-center space-x-12">

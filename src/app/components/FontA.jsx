@@ -1,6 +1,7 @@
 "use client";
 import { Patua_One } from "next/font/google";
 
+{/* Title Font */ }
 const patuaOne = Patua_One({
     weight: "400",
     subsets: ["latin"],

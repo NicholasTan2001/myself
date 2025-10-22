@@ -5,6 +5,7 @@ import Image from "next/image";
 export default function Loading({ isVisible = true }) {
     return (
         <AnimatePresence>
+            {/* Loading Page */}
             {isVisible && (
                 <motion.div
                     key="loading"

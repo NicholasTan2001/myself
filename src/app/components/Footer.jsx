@@ -6,11 +6,13 @@ import FontA from "../components/FontA";
 export default function Footer() {
     const [showFooter, setShowFooter] = useState(false);
 
+    {/* Effect: Showing footer more smoothly*/ }
     useEffect(() => {
         const timer = setTimeout(() => setShowFooter(true), 100);
         return () => clearTimeout(timer);
     }, []);
 
+    {/* Footer */ }
     return (
         <motion.footer
             initial={{ opacity: 0, y: 50 }}

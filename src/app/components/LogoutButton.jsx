@@ -6,6 +6,7 @@ export default function LogoutButton() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 
+    {/* Function: submit logout */ }
     const handleLogout = async () => {
         setLoading(true);
         try {
@@ -23,10 +24,13 @@ export default function LogoutButton() {
     };
 
     return (
+
         <div className="flex justify-end items-center gap-5 w-full">
             {loading && (
                 <div className="animate-spin rounded-full h-5 w-5 border-3 border-red-300 border-solid border-t-transparent"></div>
             )}
+
+            {/* Logout Button */}
             <button
                 onClick={handleLogout}
                 disabled={loading}

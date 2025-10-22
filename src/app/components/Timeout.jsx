@@ -6,9 +6,10 @@ export default function Timeout() {
     const router = useRouter();
     const [showMessage, setShowMessage] = useState(false);
 
+    {/* Effect: 1 hour to refresh the page*/ }
     useEffect(() => {
-        const messageTimer = setTimeout(() => setShowMessage(true), 3600000);
-        const redirectTimer = setTimeout(() => router.push("/login"), 3603000);
+        const messageTimer = setTimeout(() => setShowMessage(true), 3602000);
+        const redirectTimer = setTimeout(() => router.push("/login"), 3605000);
 
         return () => {
             clearTimeout(messageTimer);

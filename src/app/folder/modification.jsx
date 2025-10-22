@@ -10,6 +10,7 @@ import FontA from "../components/FontA";
 import FormInput from "../components/FormInput";
 import FormDay from "../components/FormDay";
 import ButtonA from "../components/ButtonA";
+import ButtonB from "../components/ButtonB";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -28,12 +29,20 @@ export default function ModificationPage() {
     const [todos, setTodos] = useState([]);
     const [specialTodos, setSpecialTodos] = useState([]);
     const [isSpecial2, setIsSpecial2] = useState(false);
+    const [selectedTask, setSelectedTask] = useState(null);
+    const [dailyError2, setDailyError2] = useState({ name: "", remark: "" });
+    const [updating, setUpdating] = useState(false);
+    const [removing, setRemoving] = useState(false);
+    const [selectedTask2, setSelectedTask2] = useState(null);
+    const [specialError2, setSpecialError2] = useState({ name: "", remark: "" });
 
+    {/* Effect: make sure first effect is show before 4 seconds */ }
     useEffect(() => {
         const timer = setTimeout(() => setHasEntered(true), 4000);
         return () => clearTimeout(timer);
     }, []);
 
+    {/* Effect: get data from dailylist api */ }
     useEffect(() => {
         const fetchTasks = async () => {
             try {
@@ -55,6 +64,7 @@ export default function ModificationPage() {
         return () => clearTimeout(timer);
     }, []);
 
+    {/* Effect: get data from speciallist api */ }
     useEffect(() => {
         const fetchSpecialTasks = async () => {
             try {
@@ -76,14 +86,17 @@ export default function ModificationPage() {
         return () => clearTimeout(timer);
     }, []);
 
+    {/* Function: loading page */ }
     if (loading) return <Loading />;
 
+    {/* Function: set data in FormData */ }
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
         setDailyError("");
         setMessage("");
     };
 
+    {/* Function: set data in specialData */ }
     const handleSpecialChange = (e) => {
         setSpecialData({ ...specialData, [e.target.name]: e.target.value });
         setSpecialError("");
@@ -91,6 +104,7 @@ export default function ModificationPage() {
         setMessage("");
     };
 
+    {/* Function: submit daily task list*/ }
     const handleSubmitDaily = async (e) => {
         e.preventDefault();
         setDailyError("");
@@ -112,7 +126,6 @@ export default function ModificationPage() {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "*Failed to add task");
 
-            setMessage("✅ Daily task added successfully!");
             setFormData({ name: "", remark: "" });
             router.push("/auth/dashboard");
         } catch (err) {
@@ -123,6 +136,7 @@ export default function ModificationPage() {
         }
     };
 
+    {/* Function: submit special task list */ }
     const handleSubmitSpecial = async (e) => {
         e.preventDefault();
         setSpecialError("");
@@ -148,7 +162,6 @@ export default function ModificationPage() {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "*Failed to add special task");
 
-            setMessage("✅ Special task added successfully!");
             setSpecialData({ name: "", remark: "", date: "", week: "" });
             router.push("/auth/dashboard");
         } catch (err) {
@@ -156,6 +169,107 @@ export default function ModificationPage() {
 
         } finally {
             setSubmitting(false);
+        }
+    };
+
+    {/* Function: update daily task list */ }
+    const handleUpdateTask = async (e) => {
+        e.preventDefault();
+        const newErrors = { name: "", remark: "" };
+        if (!selectedTask.name.trim()) newErrors.name = "*Task name is required";
+        if (!selectedTask.remark.trim()) newErrors.remark = "*Remark is required";
+        setDailyError2(newErrors);
+
+        try {
+            const res = await fetch("/api/dailytaskupdate", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: selectedTask.id,
+                    name: selectedTask.name,
+                    remark: selectedTask.remark,
+                }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Failed to update task");
+
+            setUpdating(true);
+
+            window.location.reload();
+        } catch (err) {
+
+        }
+    };
+
+    {/* Function: delete daily task list */ }
+    const handleDeleteTask = async (e) => {
+        e.preventDefault();
+
+        setRemoving(true);
+        try {
+            const res = await fetch("/api/dailytaskupdate", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: selectedTask.id }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Failed to delete task");
+
+            window.location.reload();
+        } catch (err) {
+
+        }
+    };
+
+    {/* Function: update special task list */ }
+    const handleUpdateSpecialTask = async (e) => {
+        e.preventDefault();
+        const newErrors = { name: "", remark: "", date: "", week: "" };
+        if (!selectedTask2.date && selectedTask2.week === "None") newErrors.date = "*Task date or week is required";
+
+        if (!selectedTask2.name.trim()) newErrors.name = "*Task name is required";
+        if (!selectedTask2.remark.trim()) newErrors.remark = "*Remark is required";
+        setSpecialError2(newErrors);
+
+        if (newErrors.name || newErrors.remark || newErrors.date) return;
+
+        setUpdating(true);
+        try {
+
+            const res = await fetch("/api/specialtaskupdate", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(selectedTask2),
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Failed to update special task");
+            window.location.reload();
+        } catch (err) {
+
+        }
+    };
+
+    {/* Function: delete special task list */ }
+    const handleDeleteSpecialTask = async (e) => {
+        e.preventDefault();
+
+        setRemoving(true);
+        try {
+            const res = await fetch("/api/specialtaskupdate", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: selectedTask2.id }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Failed to delete task");
+
+            window.location.reload();
+        } catch (err) {
+
         }
     };
 
@@ -341,11 +455,11 @@ export default function ModificationPage() {
             </div>
 
             {/* Modification */}
-            <div className="flex justify-center items-center mt-10 mb-10 perspective-[1500px]">
+            <div className="flex flex-col lg:flex-row lg:gap-20 lg:items-start gap-10 justify-center items-center mt-10 mb-10">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={isSpecial2 ? "special-list" : "daily-list"}
-                        className="relative bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-15 py-5 text-left w-[80%] lg:w-[700px]"
+                        className="relative bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-15 py-5 text-left w-[80%] lg:w-[40%]"
                         initial={
                             hasEntered
                                 ? { opacity: 0, rotateY: isSpecial ? -90 : 90 }
@@ -363,7 +477,7 @@ export default function ModificationPage() {
                         }
                         style={{ transformStyle: "preserve-3d" }}
                     >
-                        {/* Toggle Buttons */}
+                        {/* Flip Animation Container 2.0 */}
                         {!isSpecial2 ? (
                             <button
                                 onClick={() => setIsSpecial2(true)}
@@ -382,7 +496,7 @@ export default function ModificationPage() {
                             </button>
                         )}
 
-                        {/*Modification Special & Daily Task Form */}
+                        {/* Modification Special & Daily Task Selection*/}
                         {!isSpecial2 ? (
                             <>
                                 <h1 className="font-semibold text-lg">Modification Daily To-Do List</h1>
@@ -393,20 +507,32 @@ export default function ModificationPage() {
                                 <div className="mt-5">
                                     {todos.length > 0 ? (
                                         <ul className="list-disc">
-                                            {todos.map(({ name, remark, index }) => (
+                                            {todos.map(({ id, name, remark, index }) => (
                                                 <li
                                                     key={index}
-                                                    className="group flex flex-col cursor-pointer 
-                                        hover:bg-blue-100 active:bg-blue-300 active:text-white mb-3 text-md
-                                        hover:shadow-[0_0_10px_rgba(191,219,254,1)] select-none rounded-lg px-3 py-2"
+                                                    onClick={() => {
+                                                        setSelectedTask({ id, name, remark })
+                                                        setSelectedTask2(null);
+                                                    }}
+                                                    className={`group flex flex-col cursor-pointer mb-3 text-md rounded-lg px-3 py-2 select-none 
+                                                            transition-all duration-300 ease-in-out
+                                                            ${selectedTask?.id === id
+                                                            ? "bg-blue-300 text-white shadow-[0_0_10px_rgba(191,219,254,1)]"
+                                                            : "hover:bg-blue-100 hover:shadow-[0_0_10px_rgba(191,219,254,1)]"
+                                                        }`}
                                                 >
                                                     <span className="font-semibold">
                                                         {index + 1}. {name}
                                                     </span>
-                                                    <div className="text-gray-500 font-semibold text-md mt-1 group-active:text-white">
+
+                                                    <p
+                                                        className={`font-semibold text-md mt-1 transition-all duration-300 ease-in-out ${selectedTask?.id === id ? "text-white" : "text-gray-500"
+                                                            }`}
+                                                    >
                                                         Remark: {remark}
-                                                    </div>
+                                                    </p>
                                                 </li>
+
                                             ))}
                                         </ul>
                                     ) : (
@@ -433,28 +559,48 @@ export default function ModificationPage() {
                                 <div className="mt-5">
                                     {specialTodos.length > 0 ? (
                                         <ul className="list-disc">
-                                            {specialTodos.map(({ name, remark, index, date, week }) => (
+                                            {specialTodos.map(({ id, name, remark, index, date, week }) => (
                                                 <li
                                                     key={index}
-                                                    className="group flex flex-col cursor-pointer 
-                                        hover:bg-blue-100 active:bg-blue-300 active:text-white mb-3 text-md
-                                        hover:shadow-[0_0_10px_rgba(191,219,254,1)] select-none rounded-lg px-3 py-2"
+                                                    onClick={() => {
+                                                        setSelectedTask2({ id, name, remark, date, week })
+                                                        setSelectedTask(null);
+                                                    }}
+                                                    className={`group flex flex-col cursor-pointer mb-3 text-md rounded-lg px-3 py-2 select-none 
+                                                            transition-all duration-300 ease-in-out
+                                                            ${selectedTask2?.id === id
+                                                            ? "bg-blue-300 text-white shadow-[0_0_10px_rgba(191,219,254,1)]"
+                                                            : "hover:bg-blue-100 hover:shadow-[0_0_10px_rgba(191,219,254,1)]"
+                                                        }`}
                                                 >
 
                                                     {date && (
-                                                        <div className="text-red-500 font-semibold group-active:text-white">
-                                                            *{date ? date.split("T")[0] : null}
+                                                        <div className={`text-red-500 font-semibold transition-all duration-300 ease-in-out
+                                                        ${selectedTask2?.id === id
+                                                                ? "text-white"
+                                                                : "text-red-500"
+                                                            }`}
+                                                        >
+                                                            * {date ? date.split("T")[0] : null}
                                                         </div>
                                                     )}
 
-                                                    <div className="text-black font-semibold group-active:text-white">
-                                                        Every {week ? week : null}
-                                                    </div>
+                                                    {week && week !== "None" && (
+                                                        <div className={`ext-black font-semibold transition-all duration-300 ease-in-out
+                                                         ${selectedTask2?.id === id
+                                                                ? "text-white"
+                                                                : "text-black"
+                                                            }`}
+                                                        >
+                                                            Every {week}
+                                                        </div>
+                                                    )}
 
                                                     <span className="font-semibold">
                                                         {index + 1}. {name}
                                                     </span>
-                                                    <div className="text-gray-500 font-semibold text-md mt-1 group-active:text-white">
+                                                    <div className={`font-semibold text-md mt-1 transition-all duration-300 ease-in-out ${selectedTask2?.id === id ? "text-white" : "text-gray-500"
+                                                        }`}>
                                                         Remark: {remark}
                                                     </div>
                                                 </li>
@@ -477,8 +623,158 @@ export default function ModificationPage() {
                         )}
                     </motion.div>
                 </AnimatePresence>
-            </div>
 
+                {/* Modification Special & Daily Task Update & Delete Form */}
+                <AnimatePresence mode="wait">
+                    {(selectedTask || selectedTask2) && (
+                        <motion.div
+                            key={selectedTask2 ? "special-selected" : "daily-selected"}
+                            className="relative bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-[80%] lg:w-[30%]"
+                            initial={{
+                                opacity: 0,
+                                x: -100,
+                            }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{
+                                opacity: 0,
+                                x: -100,
+                            }}
+                            transition={{ duration: 1, ease: "easeOut" }}
+                        >
+                            {selectedTask && (
+                                <>
+                                    <h1 className="font-semibold text-lg">Modification Daily Task Selected</h1>
+                                    <h1 className="font-semibold text-lg text-gray-500 mb-5">
+                                        *Modify your selected daily task
+                                    </h1>
+                                    <form>
+                                        <FormInput
+                                            label="Task Name"
+                                            type="text"
+                                            name="name"
+                                            value={selectedTask?.name || ""}
+                                            onChange={(e) => {
+                                                setSelectedTask({ ...selectedTask, name: e.target.value })
+                                                setDailyError2((prev) => ({ ...prev, name: "" }));
+                                            }}
+                                        />
+                                        {dailyError2.name && <p className="text-red-500 text-left mb-5">{dailyError2.name}</p>}
+
+                                        <FormInput
+                                            label="Remark"
+                                            type="text"
+                                            name="remark"
+                                            value={selectedTask?.remark || ""}
+                                            onChange={(e) => {
+                                                setSelectedTask({ ...selectedTask, remark: e.target.value })
+                                                setDailyError2((prev) => ({ ...prev, remark: "" }));
+                                            }}
+                                        />
+                                        {dailyError2.remark && <p className="text-red-500 text-left mb-5">{dailyError2.remark}</p>}
+
+                                        <div className="mt-5 flex justify-end items-center gap-5">
+                                            {updating && (
+                                                <div className="animate-spin rounded-full h-5 w-5 border-3 border-blue-300 border-solid border-t-transparent"></div>
+                                            )}
+                                            <div className="flex justify-end">
+                                                <ButtonA onClick={handleUpdateTask}>{updating ? "Updating..." : "Update Task"}</ButtonA>
+                                            </div>
+                                        </div>
+                                        <div className="flex mt-5">
+                                            <ButtonB onClick={handleDeleteTask} className="w-full">
+                                                {removing ? "Removing..." : "Remove Task"}
+                                            </ButtonB>
+                                        </div>
+                                    </form>
+                                </>
+                            )}
+
+                            {selectedTask2 && (
+                                <>
+                                    <h1 className="font-semibold text-lg">Modification Special Task Selected</h1>
+                                    <h1 className="font-semibold text-lg text-gray-500 mb-5">
+                                        *Modify your selected special task
+                                    </h1>
+                                    <form>
+                                        <FormInput
+                                            label="Task Date"
+                                            type="date"
+                                            name="date"
+                                            value={selectedTask2?.date ? selectedTask2.date.split("T")[0] : ""}
+                                            onChange={(e) => {
+                                                setSelectedTask2({ ...selectedTask2, date: e.target.value })
+
+                                            }}
+                                        />
+
+                                        <div className="flex justify-center">or</div>
+
+                                        <FormDay
+                                            label="Task Day"
+                                            type="select"
+                                            name="week"
+                                            value={selectedTask2?.week || ""}
+                                            onChange={(e) => {
+                                                setSelectedTask2({ ...selectedTask2, week: e.target.value })
+                                            }}
+                                        />
+                                        {specialError2.date && <p className="text-red-500 text-left mb-5">{specialError2.date}</p>}
+
+                                        <div className="mt-15">
+
+                                            <FormInput
+                                                label="Task Name"
+                                                type="text"
+                                                name="name"
+                                                value={selectedTask2?.name || ""}
+                                                onChange={(e) => {
+                                                    setSelectedTask2({ ...selectedTask2, name: e.target.value })
+                                                    setSpecialError2((prev) => ({ ...prev, name: "" }));
+
+                                                }}
+
+                                            />
+
+                                            {specialError2.name && <p className="text-red-500 text-left mb-5">{specialError2.name}</p>}
+
+                                            <FormInput
+                                                label="Remark"
+                                                type="text"
+                                                name="remark"
+                                                value={selectedTask2?.remark || ""}
+                                                onChange={(e) => {
+                                                    setSelectedTask2({ ...selectedTask2, remark: e.target.value })
+                                                    setSpecialError2((prev) => ({ ...prev, remark: "" }));
+
+                                                }}
+                                            />
+
+                                            {specialError2.remark && <p className="text-red-500 text-left mb-5">{specialError2.remark}</p>}
+
+                                        </div>
+
+                                        <div className="mt-5 flex justify-end items-center gap-5">
+                                            {updating && (
+                                                <div className="animate-spin rounded-full h-5 w-5 border-3 border-blue-300 border-solid border-t-transparent"></div>
+                                            )}
+                                            <ButtonA onClick={handleUpdateSpecialTask}>{updating ? "Updating..." : "Update Task"}</ButtonA>
+                                        </div>
+
+                                        <div className="flex mt-5">
+                                            <ButtonB onClick={handleDeleteSpecialTask} className="w-full">
+                                                {removing ? "Removing..." : "Remove Task"}
+                                            </ButtonB>
+                                        </div>
+                                    </form>
+                                </>
+
+                            )}
+                        </motion.div>
+                    )}
+
+                </AnimatePresence>
+
+            </div >
             <Footer />
         </>
     );

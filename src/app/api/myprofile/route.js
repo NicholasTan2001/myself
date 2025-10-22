@@ -3,16 +3,21 @@ import jwt from "jsonwebtoken";
 import { prisma } from "../../../../lib/prisma";
 import bcrypt from "bcryptjs";
 
+{/* Function: get user data */ }
 export async function GET(req) {
     try {
+
+        {/* Token Verification */ }
         const token = req.cookies.get("token")?.value;
 
         if (!token) {
             return NextResponse.json({ error: "*No token found" }, { status: 401 });
         }
 
+        {/* userId is taken from token */ }
         const decoded = jwt.verify(token, process.env.JWT_SECRET || "dev-secret");
 
+        {/* get data from User*/ }
         const user = await prisma.user.findUnique({
             where: { id: decoded.userId },
             select: {
@@ -33,28 +38,35 @@ export async function GET(req) {
     }
 }
 
+{/* Function: update user data */ }
 export async function PATCH(req) {
     try {
+
+        {/* Token Verification */ }
         const token = req.cookies.get("token")?.value;
 
         if (!token) {
             return NextResponse.json({ error: "*No token found" }, { status: 401 });
         }
 
+        {/* userId is taken from token and get data from .jsx page */ }
         const decoded = jwt.verify(token, process.env.JWT_SECRET || "dev-secret");
         const body = await req.json();
         const { name, email, password, confirmPassword } = body;
 
+        {/* confirm password */ }
         if (password && password !== confirmPassword) {
             return NextResponse.json({ error: "*Passwords do not match" }, { status: 400 });
         }
 
+        {/* encryt password */ }
         const updateData = { name, email };
         if (password) {
             const hashedPassword = await bcrypt.hash(password, 10);
             updateData.password = hashedPassword;
         }
 
+        {/* update User */ }
         const updatedUser = await prisma.user.update({
             where: { id: decoded.userId },
             data: updateData,

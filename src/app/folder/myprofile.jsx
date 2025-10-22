@@ -17,18 +17,18 @@ export default function MyProfilePage() {
     const [errors, setErrors] = useState({});
     const [message, setMessage] = useState("");
     const [submitting, setSubmitting] = useState(false);
-    const [deleting, setDeleting] = useState(false);
     const [deletePassword, setDeletePassword] = useState("");
     const [deleteError, setDeleteError] = useState("");
     const [deleteLoading, setDeleteLoading] = useState(false);
-
     const router = useRouter();
 
+    {/* Effect: loading in 3 seconds */ }
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 3000);
         return () => clearTimeout(timer);
     }, []);
 
+    {/* Effect: get data from my profile api */ }
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -43,6 +43,7 @@ export default function MyProfilePage() {
         fetchData();
     }, []);
 
+    {/* Function: set data in UserData */ }
     const handleChange = (e) => {
         const { name, value } = e.target;
         setUserData({ ...userData, [name]: value });
@@ -50,11 +51,13 @@ export default function MyProfilePage() {
         setMessage("");
     };
 
+    {/* Function: set data in DeletePassword */ }
     const handleDeleteChange = (e) => {
         setDeletePassword(e.target.value);
         setDeleteError("");
     };
 
+    {/* Function: update my profile information */ }
     const handleUpdate = async (e) => {
         e.preventDefault();
         setMessage("");
@@ -87,31 +90,7 @@ export default function MyProfilePage() {
             setSubmitting(false);
         }
     };
-
-    const handleDelete = async (e) => {
-        e.preventDefault();
-        if (!userData.deletePassword) {
-            setErrors({ deletePassword: "*Password required" });
-            return;
-        }
-
-        setDeleting(true);
-        try {
-            const res = await fetch("/api/delete-acc", {
-                method: "DELETE",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ password: userData.deletePassword }),
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || "*Failed to delete account");
-
-            router.push("/login");
-        } catch (err) {
-            setMessage(err.message);
-            setDeleting(false);
-        }
-    };
-
+    {/* Function: delete user data */ }
     const handleDeleteAccount = async (e) => {
         e.preventDefault();
         if (!deletePassword.trim()) {
@@ -138,6 +117,7 @@ export default function MyProfilePage() {
         }
     };
 
+    {/* Function: loading page */ }
     if (loading) return <Loading />;
 
     return (
