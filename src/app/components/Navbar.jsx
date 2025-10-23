@@ -147,7 +147,7 @@ export default function Navbar() {
                     <span className={innerTextClass}>My Profile</span>
                 </Link>
 
-                <div className="p-5 ml-20 mr-20 flex justify-center">
+                <div className="p-5">
                     <LogoutButton />
                 </div>
             </div>

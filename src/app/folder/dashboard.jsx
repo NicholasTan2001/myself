@@ -7,6 +7,9 @@ import Timeout from "../components/Timeout";
 import Loading from "../components/Loading";
 import Footer from "../components/Footer";
 import FontA from "../components/FontA";
+import ChartDailyList from "../components/ChartDailyList";
+import ChartSpecialList from "../components/ChartSpecialList";
+
 import Image from "next/image";
 
 export default function DashboardPage() {
@@ -188,7 +191,7 @@ export default function DashboardPage() {
                 >
                     <h1 className="font-semibold text-lg">Special To-Do List</h1>
                     <h1 className="font-semibold text-lg text-gray-500 mb-5">
-                        * Special tasks that are assigned to certain days.
+                        *Special tasks that are assigned to certain days.
                     </h1>
                     <ul className="space-y-3">
                         {sortedSpecialTodos.length > 0 ? (
@@ -265,6 +268,45 @@ export default function DashboardPage() {
                     </h2>
                 </motion.div>
             </div>
+
+            {/* / Special and Daily List Chart */}
+            <div className="flex justify-center px-10 lg:px-20">
+                <motion.div
+                    className="mb-10 w-full max-w-[1600px]"
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    viewport={{ once: true, amount: 0.1 }}
+                >
+                    <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 lg:px-10">
+                        <div className="flex flex-col lg:flex-row justify-center gap-10 lg:gap-20">
+                            {/* Daily To-Do Chart */}
+                            <div className="flex-1">
+                                <h2 className="font-semibold text-lg mb-2 text-left">
+                                    Daily To-Do List Chart
+                                </h2>
+                                <p className="font-semibold text-sm text-gray-500 mb-3 text-left">
+                                    *A chart displaying the daily tasks that have been completed.
+                                </p>
+                                <ChartDailyList todos={todos} checkedItems={checkedItems} />
+                            </div>
+
+                            {/* Special To-Do Chart */}
+                            <div className="flex-1">
+                                <h2 className="font-semibold text-lg mb-2 text-left">
+                                    Special To-Do List Chart
+                                </h2>
+                                <p className="font-semibold text-sm text-gray-500 mb-3 text-left">
+                                    *A chart displaying the special tasks that have been completed.
+                                </p>
+                                <ChartSpecialList todos={specialTodos} checkedItems={specialChecked} />
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+            </div>
+
+
             <Footer />
         </>
     );

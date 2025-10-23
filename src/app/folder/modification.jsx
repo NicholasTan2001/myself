@@ -36,9 +36,9 @@ export default function ModificationPage() {
     const [selectedTask2, setSelectedTask2] = useState(null);
     const [specialError2, setSpecialError2] = useState({ name: "", remark: "" });
 
-    {/* Effect: make sure first effect is show before 4 seconds */ }
+    {/* Effect: make sure first effect is show before 4.5 seconds */ }
     useEffect(() => {
-        const timer = setTimeout(() => setHasEntered(true), 4000);
+        const timer = setTimeout(() => setHasEntered(true), 4500);
         return () => clearTimeout(timer);
     }, []);
 
