@@ -285,7 +285,7 @@ export default function ModificationPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: "easeOut" }}
             >
-                <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-center w-[70%] lg:w-[800px]">
+                <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-center w-[70%] lg:w-[50%]">
                     <FontA>
                         <h1 className="text-2xl">Modification</h1>
                     </FontA>
@@ -293,11 +293,11 @@ export default function ModificationPage() {
             </motion.div>
 
             {/* Flip Animation Container */}
-            <div className="flex justify-center items-center mt-10 mb-10 perspective-[1500px]">
+            <div className="flex justify-center items-center mt-10 mb-10 px-10 ">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={isSpecial ? "special" : "daily"}
-                        className="relative bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-5 py-5 text-left w-[80%] lg:w-[1000px]"
+                        className="relative bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-5 py-5 text-left w-full lg:w-[70%]"
                         initial={
                             hasEntered
                                 ? { opacity: 0, rotateY: isSpecial ? -90 : 90 }
@@ -459,7 +459,7 @@ export default function ModificationPage() {
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={isSpecial2 ? "special-list" : "daily-list"}
-                        className="relative bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-15 py-5 text-left w-[80%] lg:w-[40%]"
+                        className="relative bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-15 py-5 text-left w-[70%] lg:w-[50%]"
                         initial={
                             hasEntered
                                 ? { opacity: 0, rotateY: isSpecial ? -90 : 90 }
@@ -629,7 +629,7 @@ export default function ModificationPage() {
                     {(selectedTask || selectedTask2) && (
                         <motion.div
                             key={selectedTask2 ? "special-selected" : "daily-selected"}
-                            className="relative bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-[80%] lg:w-[30%]"
+                            className="relative bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-[70%] lg:w-[30%]"
                             initial={{
                                 opacity: 0,
                                 x: -100,

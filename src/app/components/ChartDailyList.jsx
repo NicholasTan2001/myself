@@ -84,7 +84,7 @@ export default function Chart({ todos, checkedItems }) {
                     </div>
                 </div>
             ) : (
-                <div className="flex flex-col w-full mt-5">
+                <div className="flex flex-col w-full mt-20">
                     <div className="flex justify-center">
                         {/* Empty Task */}
                         <Image
@@ -98,7 +98,7 @@ export default function Chart({ todos, checkedItems }) {
                     <p className="text-gray-400 font-semibold text-center">
                         No tasks available today.
                     </p>
-                    <p className=" text-right font-semibold text-black mt-5">
+                    <p className=" text-right font-semibold text-black mt-25">
                         Completed: (0%)
                     </p>
                 </div >

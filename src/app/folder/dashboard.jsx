@@ -9,7 +9,6 @@ import Footer from "../components/Footer";
 import FontA from "../components/FontA";
 import ChartDailyList from "../components/ChartDailyList";
 import ChartSpecialList from "../components/ChartSpecialList";
-
 import Image from "next/image";
 
 export default function DashboardPage() {
@@ -31,16 +30,57 @@ export default function DashboardPage() {
         day: "numeric",
     });
 
-    {/* Function: get data from dashboard api */ }
+    {/* Effect: get fetch to taskrecord api */ }
+    useEffect(() => {
+        const fetchAndResetTasks = async () => {
+            try {
+                const res = await fetch("/api/taskrecord");
+                const data = await res.json();
+
+                if (data.error) {
+                    console.error(data.error);
+                }
+            } catch (err) {
+                console.error("*Error fetching tasks:", err);
+            }
+        };
+        const timer = setTimeout(fetchAndResetTasks, 2900);
+        return () => clearTimeout(timer);
+    }, []);
+
+    {/* Effect: get data from dashboard api */ }
     useEffect(() => {
         const fetchTasks = async () => {
             try {
                 const res = await fetch("/api/dashboard");
                 const data = await res.json();
                 if (data.dailyTasks && data.specialTasks) {
-                    setTodos(data.dailyTasks.map((t, idx) => ({ ...t, index: idx })));
-                    setSpecialTodos(data.specialTasks.map((t, idx) => ({ ...t, index: idx })));
-                } else {
+                    const dailyWithIndex = data.dailyTasks.map((t, idx) => ({
+                        ...t,
+                        index: idx,
+                    }));
+
+                    const specialWithIndex = data.specialTasks.map((t, idx) => ({
+                        ...t,
+                        index: idx,
+                    }));
+
+                    setTodos(dailyWithIndex);
+                    setSpecialTodos(specialWithIndex);
+
+                    const initialChecked = {};
+                    dailyWithIndex.forEach((t) => {
+                        initialChecked[t.index] = t.check === "true";
+                    });
+                    setCheckedItems(initialChecked);
+
+                    const initialSpecialChecked = {};
+                    specialWithIndex.forEach((t) => {
+                        initialSpecialChecked[t.index] = t.check === "true";
+                    });
+                    setSpecialChecked(initialSpecialChecked);
+                }
+                else {
                     console.error(data.error);
                 }
             } catch (err) {
@@ -58,12 +98,42 @@ export default function DashboardPage() {
     if (loading) return <Loading />;
 
     {/* Function: change the location when daily task is checked */ }
-    const handleCheckboxChange = (index) =>
-        setCheckedItems((prev) => ({ ...prev, [index]: !prev[index] }));
+    const handleCheckboxChange = async (index, taskId) => {
+        setCheckedItems((prev) => {
+            const newChecked = !prev[index];
+
+            // call backend API to update DB
+            fetch("/api/dailytaskcheck", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: taskId,
+                    check: newChecked ? "true" : "false"
+                })
+            }).catch((err) => console.error("Error updating check:", err));
+
+            return { ...prev, [index]: newChecked };
+        });
+    };
 
     {/* Function: change the location when special task is checked */ }
-    const handleSpecialCheckboxChange = (index) =>
-        setSpecialChecked((prev) => ({ ...prev, [index]: !prev[index] }));
+    const handleSpecialCheckboxChange = async (index, taskId) => {
+        setSpecialChecked((prev) => {
+            const newSpecialChecked = !prev[index];
+
+            // call backend API to update DB
+            fetch("/api/specialtaskcheck", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: taskId,
+                    check: newSpecialChecked ? "true" : "false"
+                })
+            }).catch((err) => console.error("Error updating check:", err));
+
+            return { ...prev, [index]: newSpecialChecked };
+        });
+    };
 
     {/* Function: sort the daily task list */ }
     const sortedTodos = [...todos].sort((a, b) => {
@@ -98,7 +168,7 @@ export default function DashboardPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: "easeOut" }}
             >
-                <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-center w-[70%] lg:w-[800px]">
+                <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-center w-[70%] lg:w-[50%]">
                     <FontA>
                         <h1 className="text-2xl">Dashboard - {today}</h1>
                     </FontA>
@@ -125,7 +195,7 @@ export default function DashboardPage() {
                                     key={index}
                                     layout
                                     transition={{ type: "spring", stiffness: 150, damping: 20 }}
-                                    onClick={() => handleCheckboxChange(index)}
+                                    onClick={() => handleCheckboxChange(index, todos[index].id)}
                                     className="group flex flex-col cursor-pointer 
                                     hover:bg-blue-100 active:bg-blue-300 active:text-white 
                                     hover:shadow-[0_0_10px_rgba(191,219,254,1)] select-none rounded-lg px-3 py-2"
@@ -200,7 +270,7 @@ export default function DashboardPage() {
                                     key={index}
                                     layout
                                     transition={{ type: "spring", stiffness: 150, damping: 20 }}
-                                    onClick={() => handleSpecialCheckboxChange(index)}
+                                    onClick={() => handleSpecialCheckboxChange(index, specialTodos[index].id)}
                                     className="group flex flex-col cursor-pointer 
                                     hover:bg-blue-100 active:bg-blue-300 active:text-white 
                                     hover:shadow-[0_0_10px_rgba(191,219,254,1)] select-none rounded-lg px-3 py-2"
@@ -269,7 +339,7 @@ export default function DashboardPage() {
                 </motion.div>
             </div>
 
-            {/* / Special and Daily List Chart */}
+            {/* Special and Daily List Chart */}
             <div className="flex justify-center px-10 lg:px-20">
                 <motion.div
                     className="mb-10 w-full max-w-[1600px]"

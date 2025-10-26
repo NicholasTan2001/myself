@@ -26,7 +26,7 @@ export async function GET(req) {
         {/* Get Daily List */ }
         const dailyTasks = await prisma.dailyList.findMany({
             where: { userId: decoded.userId },
-            select: { id: true, name: true, remark: true },
+            select: { id: true, name: true, remark: true, check: true },
         });
 
         {/* Get Special List */ }
@@ -45,7 +45,7 @@ export async function GET(req) {
                     },
                 ],
             },
-            select: { id: true, name: true, remark: true, date: true, week: true },
+            select: { id: true, name: true, remark: true, date: true, week: true, check: true },
         });
 
         return NextResponse.json({ dailyTasks, specialTasks });

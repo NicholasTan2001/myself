@@ -132,7 +132,7 @@ export default function MyProfilePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: "easeOut" }}
             >
-                <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-center w-[70%] lg:w-[800px]">
+                <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-center w-[70%] lg:w-[50%]">
                     <FontA>
                         <h1 className="text-2xl">My Profile</h1>
                     </FontA>
@@ -146,8 +146,8 @@ export default function MyProfilePage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: "easeOut" }}
             >
-                <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-[80%] lg:w-[1000px]">
-                    <h1 className="font-semibold mb-5">My Personal Information</h1>
+                <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-[90%] lg:w-[70%]">
+                    <h1 className="font-semibold text-xl mb-5">My Personal Information</h1>
 
                     <form className="space-y-4" onSubmit={handleUpdate}>
                         <div>
@@ -208,19 +208,20 @@ export default function MyProfilePage() {
                         </div>
                     </form>
                 </div>
-            </motion.div>
+            </motion.div >
 
             {/* Account Deletion */}
-            <motion.div
+            < motion.div
                 className="flex justify-center items-center mt-10 mb-10"
-                initial={{ opacity: 0, y: 50 }}
+                initial={{ opacity: 0, y: 50 }
+                }
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: "easeOut" }}
                 viewport={{ once: true, amount: 0.1 }}
             >
-                <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-[80%] lg:w-[1000px]">
-                    <h1 className="font-semibold mb-5 text-red-500">Account Deletion</h1>
-                    <div className="font-semibold mb-5">*You are about to permanently delete your account.
+                <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-[90%] lg:w-[70%]">
+                    <h1 className="font-semibold text-xl mb-5 text-red-500">Account Deletion</h1>
+                    <div className="font-semibold mb-5">* You are about to permanently delete your account.
                         Once your account is deleted, all your data, settings, and personal information
                         will be irreversibly removed from our system. If you are certain that you want to
                         proceed, please enter your password below to confirm your decision. Only after verifying
@@ -251,7 +252,7 @@ export default function MyProfilePage() {
                         </div>
                     </form>
                 </div>
-            </motion.div>
+            </motion.div >
             <Footer />
         </>
     );
