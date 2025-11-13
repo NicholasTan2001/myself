@@ -88,12 +88,12 @@ export default function LoginPage() {
 
                 {/* Welcome Text */}
                 <FontA>
-                    <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-7 max-w-full truncate">Continue to MySelf</h1>
+                    <h1 className="text-xl lg:text-2xl font-bold text-gray-800 mb-7 max-w-full truncate">Continue to MySelf</h1>
                 </FontA>
 
                 {/* Login Form */}
                 <form onSubmit={handleSubmit}>
-                    <div className="w-full mb-4">
+                    <div className="w-full mb-4 text-sm lg:text-base">
                         <FormInput
                             label="Email Address"
                             type="email"
@@ -104,7 +104,7 @@ export default function LoginPage() {
                         {emailError && <p className="text-sm text-red-600 text-center">{emailError}</p>}
                     </div>
 
-                    <div className="w-full">
+                    <div className="w-full text-sm lg:text-base">
                         <FormInput
                             label="Password"
                             type="password"

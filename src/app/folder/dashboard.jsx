@@ -102,7 +102,6 @@ export default function DashboardPage() {
         setCheckedItems((prev) => {
             const newChecked = !prev[index];
 
-            // call backend API to update DB
             fetch("/api/dailytaskcheck", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -121,7 +120,6 @@ export default function DashboardPage() {
         setSpecialChecked((prev) => {
             const newSpecialChecked = !prev[index];
 
-            // call backend API to update DB
             fetch("/api/specialtaskcheck", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -158,226 +156,246 @@ export default function DashboardPage() {
 
     return (
         <>
-            <Navbar />
-            <Timeout />
+            <header><Navbar /></header>
 
-            {/* Title */}
-            <motion.div
-                className="flex justify-center items-center mt-10"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, ease: "easeOut" }}
-            >
-                <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-center w-[70%] lg:w-[50%]">
-                    <FontA>
-                        <h1 className="text-2xl">Dashboard - {today}</h1>
-                    </FontA>
-                </div>
-            </motion.div>
+            <main className="flex flex-col max-w-screen-2xl mx-auto">
 
-            {/* Two To-Do Lists Side by Side */}
-            <div className="flex flex-col lg:flex-row justify-center items-start gap-10 mt-10 mb-10 lg:px-20 px-10">
-                {/* Daily To-Do List */}
+                <Timeout />
+
+                {/* Title */}
                 <motion.div
-                    className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-full lg:w-1/2"
-                    initial={{ opacity: 0, x: -100 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    className="flex justify-center items-center mt-10"
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, ease: "easeOut" }}
                 >
-                    <h1 className="font-semibold text-lg">Daily To-Do List</h1>
-                    <h1 className="font-semibold text-lg text-gray-500 mb-5">
-                        * Daily tasks that need to be completed every day.
-                    </h1>
-                    <ul className="space-y-3">
-                        {sortedTodos.length > 0 ? (
-                            sortedTodos.map(({ name, remark, index }) => (
-                                <motion.li
-                                    key={index}
-                                    layout
-                                    transition={{ type: "spring", stiffness: 150, damping: 20 }}
-                                    onClick={() => handleCheckboxChange(index, todos[index].id)}
-                                    className="group flex flex-col cursor-pointer 
+                    <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-center w-[70%] lg:w-[50%]">
+                        <FontA>
+                            <h1 className="text-xl lg:text-2xl">Dashboard - {today}</h1>
+                        </FontA>
+                    </div>
+                </motion.div>
+
+                {/* Two To-Do Lists Side by Side */}
+                <div className="flex flex-col lg:flex-row justify-center items-start gap-10 mt-10 mb-10 lg:px-20 px-10">
+                    {/* Daily To-Do List */}
+                    <motion.div
+                        className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-full lg:w-1/2"
+                        initial={{ opacity: 0, x: -100 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 1, ease: "easeOut" }}
+                    >
+                        <h1 className="font-semibold text-md lg:text-lg">Daily To-Do List</h1>
+                        <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
+                            * Daily tasks that need to be completed every day.
+                        </h1>
+                        <ul className="space-y-3">
+                            {sortedTodos.length > 0 ? (
+                                sortedTodos.map(({ name, remark, index }) => (
+                                    <motion.li
+                                        key={index}
+                                        layout
+                                        transition={{ type: "spring", stiffness: 150, damping: 20 }}
+                                        onClick={() => handleCheckboxChange(index, todos[index].id)}
+                                        className="group flex flex-col cursor-pointer 
                                     hover:bg-blue-100 active:bg-blue-300 active:text-white 
                                     hover:shadow-[0_0_10px_rgba(191,219,254,1)] select-none rounded-lg px-3 py-2"
-                                >
-                                    <div className="flex justify-between items-center w-full">
-                                        <span
-                                            className={`text-black text-md font-semibold group-active:text-white ${checkedItems[index] ? "line-through text-gray-500" : ""}`}
-                                        >
-                                            {index + 1}. {name}
-                                        </span>
-                                        <input
-                                            type="checkbox"
-                                            checked={checkedItems[index] || false}
-                                            onChange={() => { }}
-                                            className="h-5 w-5 appearance-none bg-transparent border-none outline-none cursor-pointer 
+                                    >
+                                        <div className="flex justify-between items-center w-full">
+                                            <span
+                                                className={`text-black text-sm lg:text-base font-semibold group-active:text-white ${checkedItems[index] ? "line-through text-gray-500" : ""}`}
+                                            >
+                                                {index + 1}. {name}
+                                            </span>
+                                            <input
+                                                type="checkbox"
+                                                checked={checkedItems[index] || false}
+                                                onChange={() => { }}
+                                                className="h-5 w-5 appearance-none bg-transparent border-none outline-none cursor-pointer 
                                             checked:bg-transparent checked:before:content-['✔'] checked:before:text-blue-500 
                                             checked:before:flex checked:before:items-center checked:before:justify-center
                                             group-hover:bg-transparent transition"
-                                        />
-                                    </div>
-                                    <p className="text-gray-500 font-semibold text-md mt-1 group-active:text-white">Remark: {remark}</p>
-                                </motion.li>
-                            ))
-                        ) : (
+                                            />
+                                        </div>
+                                        <p className="text-gray-500 font-semibold text-sm lg:text-base mt-1 group-active:text-white">Remark: {remark}</p>
+                                    </motion.li>
+                                ))
+                            ) : (
 
-                            <div className="flex flex-col items-center justify-center mt-5">
-                                <Image
-                                    src="/notask.png"
-                                    alt="No tasks"
-                                    width={120}
-                                    height={120}
-                                    className="opacity-80"
-                                />
-                                <p className="text-gray-400 font-semibold text-center">No tasks available today.</p>
-                            </div>
-                        )}
-                    </ul>
+                                <div className="flex flex-col items-center justify-center mt-5">
+                                    <Image
+                                        src="/notask.png"
+                                        alt="No tasks"
+                                        width={120}
+                                        height={120}
+                                        className="opacity-80"
+                                    />
+                                    <p className="text-gray-400 text-sm lg:text-base font-semibold text-center">No tasks available today.</p>
+                                </div>
+                            )}
+                        </ul>
 
-                    <h2 className="font-semibold mt-5 text-right">
-                        Completed:{" "}
-                        <AnimatePresence mode="popLayout">
-                            <motion.span
-                                key={totalChecked}
-                                initial={{ y: -20, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                exit={{ y: 0, opacity: 0 }}
-                                transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                                className="inline-block"
-                            >
-                                {totalChecked}
-                            </motion.span>
-                        </AnimatePresence>{" "}
-                        / {todos.length}
-                    </h2>
-                </motion.div>
+                        <h2 className="font-semibold mt-5 text-sm lg:text-base text-right">
+                            Completed:{" "}
+                            <AnimatePresence mode="popLayout">
+                                <motion.span
+                                    key={totalChecked}
+                                    initial={{ y: -20, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    exit={{ y: 0, opacity: 0 }}
+                                    transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                                    className="inline-block"
+                                >
+                                    {totalChecked}
+                                </motion.span>
+                            </AnimatePresence>{" "}
+                            / {todos.length}
+                        </h2>
+                    </motion.div>
 
-                {/* Special To-Do List */}
-                <motion.div
-                    className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-full lg:w-1/2"
-                    initial={{ opacity: 0, x: 100 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                >
-                    <h1 className="font-semibold text-lg">Special To-Do List</h1>
-                    <h1 className="font-semibold text-lg text-gray-500 mb-5">
-                        *Special tasks that are assigned to certain days.
-                    </h1>
-                    <ul className="space-y-3">
-                        {sortedSpecialTodos.length > 0 ? (
-                            sortedSpecialTodos.map(({ name, remark, index, date, week }) => (
-                                <motion.li
-                                    key={index}
-                                    layout
-                                    transition={{ type: "spring", stiffness: 150, damping: 20 }}
-                                    onClick={() => handleSpecialCheckboxChange(index, specialTodos[index].id)}
-                                    className="group flex flex-col cursor-pointer 
+                    {/* Special To-Do List */}
+                    <motion.div
+                        className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-full lg:w-1/2"
+                        initial={{ opacity: 0, x: 100 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 1, ease: "easeOut" }}
+                    >
+                        <h1 className="font-semibold text-md lg:text-lg">Special To-Do List</h1>
+                        <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
+                            *Special tasks that are assigned to certain days.
+                        </h1>
+                        <ul className="space-y-3">
+                            {sortedSpecialTodos.length > 0 ? (
+                                sortedSpecialTodos.map(({ name, remark, index, date, week }) => (
+                                    <motion.li
+                                        key={index}
+                                        layout
+                                        transition={{ type: "spring", stiffness: 150, damping: 20 }}
+                                        onClick={() => handleSpecialCheckboxChange(index, specialTodos[index].id)}
+                                        className="group flex flex-col cursor-pointer 
                                     hover:bg-blue-100 active:bg-blue-300 active:text-white 
                                     hover:shadow-[0_0_10px_rgba(191,219,254,1)] select-none rounded-lg px-3 py-2"
-                                >
-                                    {date && (
-                                        <div className="text-red-500 font-semibold group-active:text-white">
-                                            *{date ? date.split("T")[0] : null}
-                                        </div>
-                                    )}
+                                    >
+                                        {date && (
+                                            <div className="text-red-500 font-semibold group-active:text-white">
+                                                *{date ? date.split("T")[0] : null}
+                                            </div>
+                                        )}
 
-                                    {week && week !== "None" && (
-                                        <div className="text-black font-semibold group-active:text-white">
-                                            Every {week}
-                                        </div>
-                                    )}
+                                        {week && week !== "None" && (
+                                            <div className="text-black font-semibold text-sm lg:text-base group-active:text-white">
+                                                Every {week}
+                                            </div>
+                                        )}
 
-                                    <div className="flex justify-between items-center w-full">
-                                        <span
-                                            className={`text-black text-md font-semibold group-active:text-white ${specialChecked[index] ? "line-through text-gray-500" : ""
-                                                }`}
-                                        >
-                                            {index + 1}. {name}
-                                        </span>
-                                        <input
-                                            type="checkbox"
-                                            checked={specialChecked[index] || false}
-                                            onChange={() => { }}
-                                            className="h-5 w-5 appearance-none bg-transparent border-none outline-none cursor-pointer 
+                                        <div className="flex justify-between items-center w-full">
+                                            <span
+                                                className={`text-black text-sm lg:text-base font-semibold group-active:text-white ${specialChecked[index] ? "line-through text-gray-500" : ""
+                                                    }`}
+                                            >
+                                                {index + 1}. {name}
+                                            </span>
+                                            <input
+                                                type="checkbox"
+                                                checked={specialChecked[index] || false}
+                                                onChange={() => { }}
+                                                className="h-5 w-5 appearance-none bg-transparent border-none outline-none cursor-pointer 
                                             checked:bg-transparent checked:before:content-['✔'] checked:before:text-red-500 
                                             checked:before:flex checked:before:items-center checked:before:justify-center
                                             group-hover:bg-transparent transition"
-                                        />
-                                    </div>
-                                    <p className="text-gray-500 font-semibold text-md mt-1 group-active:text-white">Remark: {remark}</p>
-                                </motion.li>
-                            ))
-                        ) : (
-                            <div className="flex flex-col items-center justify-center mt-5">
-                                <Image
-                                    src="/notask.png"
-                                    alt="No tasks"
-                                    width={120}
-                                    height={120}
-                                    className="opacity-80"
-                                />
-                                <p className="text-gray-400 font-semibold text-center">No tasks available today.</p>
-                            </div>)}
-                    </ul>
+                                            />
+                                        </div>
+                                        <p className="text-gray-500 font-semibold text-sm lg:text-base mt-1 group-active:text-white">Remark: {remark}</p>
+                                    </motion.li>
+                                ))
+                            ) : (
+                                <div className="flex flex-col items-center justify-center mt-5">
+                                    <Image
+                                        src="/notask.png"
+                                        alt="No tasks"
+                                        width={120}
+                                        height={120}
+                                        className="opacity-80"
+                                    />
+                                    <p className="text-gray-400 text-sm lg:text-base font-semibold text-center">No tasks available today.</p>
+                                </div>)}
+                        </ul>
 
-                    <h2 className="font-semibold mt-5 text-right">
-                        Completed:{" "}
-                        <AnimatePresence mode="popLayout">
-                            <motion.span
-                                key={totalSpecialChecked}
-                                initial={{ y: -20, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                exit={{ y: 0, opacity: 0 }}
-                                transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                                className="inline-block"
-                            >
-                                {totalSpecialChecked}
-                            </motion.span>
-                        </AnimatePresence>{" "}
-                        / {specialTodos.length}
-                    </h2>
-                </motion.div>
-            </div>
+                        <h2 className="font-semibold mt-5 text-sm lg:text-base text-right">
+                            Completed:{" "}
+                            <AnimatePresence mode="popLayout">
+                                <motion.span
+                                    key={totalSpecialChecked}
+                                    initial={{ y: -20, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    exit={{ y: 0, opacity: 0 }}
+                                    transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                                    className="inline-block"
+                                >
+                                    {totalSpecialChecked}
+                                </motion.span>
+                            </AnimatePresence>{" "}
+                            / {specialTodos.length}
+                        </h2>
+                    </motion.div>
+                </div>
 
-            {/* Special and Daily List Chart */}
-            <div className="flex justify-center px-10 lg:px-20">
+                {/* Daily Report */}
                 <motion.div
-                    className="mb-10 w-full max-w-[1600px]"
+                    className="flex justify-center items-center mt-10"
                     initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, ease: "easeOut" }}
                     viewport={{ once: true, amount: 0.1 }}
                 >
-                    <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 lg:px-10">
-                        <div className="flex flex-col lg:flex-row justify-center gap-10 lg:gap-20">
-                            {/* Daily To-Do Chart */}
-                            <div className="flex-1">
-                                <h2 className="font-semibold text-lg mb-2 text-left">
-                                    Daily To-Do List Chart
-                                </h2>
-                                <p className="font-semibold text-sm text-gray-500 mb-3 text-left">
-                                    *A chart displaying the daily tasks that have been completed.
-                                </p>
-                                <ChartDailyList todos={todos} checkedItems={checkedItems} />
-                            </div>
-
-                            {/* Special To-Do Chart */}
-                            <div className="flex-1">
-                                <h2 className="font-semibold text-lg mb-2 text-left">
-                                    Special To-Do List Chart
-                                </h2>
-                                <p className="font-semibold text-sm text-gray-500 mb-3 text-left">
-                                    *A chart displaying the special tasks that have been completed.
-                                </p>
-                                <ChartSpecialList todos={specialTodos} checkedItems={specialChecked} />
-                            </div>
-                        </div>
+                    <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-center w-[70%] lg:w-[50%]">
+                        <FontA>
+                            <h1 className="text-xl lg:text-2xl">Daily Report</h1>
+                        </FontA>
                     </div>
                 </motion.div>
-            </div>
 
+                {/* Special and Daily List Chart */}
+                <div className="flex justify-center px-10 mt-10 lg:px-20">
+                    <motion.div
+                        className="mb-10 w-full max-w-[1600px]"
+                        initial={{ opacity: 0, y: 50 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1, ease: "easeOut" }}
+                        viewport={{ once: true, amount: 0.1 }}
+                    >
+                        <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 lg:px-10">
+                            <div className="flex flex-col lg:flex-row justify-center gap-10 lg:gap-20">
+                                {/* Daily To-Do Chart */}
+                                <div className="flex-1">
+                                    <h2 className="font-semibold text-md lg:text-lg mb-2 text-left">
+                                        Daily To-Do List Chart
+                                    </h2>
+                                    <p className="font-semibold text-md lg:text-lg text-gray-500 mb-3 text-left">
+                                        *A chart displaying the daily tasks that have been completed.
+                                    </p>
+                                    <ChartDailyList todos={todos} checkedItems={checkedItems} />
+                                </div>
 
-            <Footer />
+                                {/* Special To-Do Chart */}
+                                <div className="flex-1">
+                                    <h2 className="font-semibold text-md lg:text-lg mb-2 text-left">
+                                        Special To-Do List Chart
+                                    </h2>
+                                    <p className="font-semibold text-md lg:text-lg text-gray-500 mb-3 text-left">
+                                        *A chart displaying the special tasks that have been completed.
+                                    </p>
+                                    <ChartSpecialList todos={specialTodos} checkedItems={specialChecked} />
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+
+            </main>
+
+            <footer><Footer /></footer>
+
         </>
     );
 }

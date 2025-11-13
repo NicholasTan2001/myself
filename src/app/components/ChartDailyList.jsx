@@ -3,7 +3,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 
-export default function Chart({ todos, checkedItems }) {
+export default function ChartDailyList({ todos, checkedItems }) {
 
     {/* Import react-apexcharts with dynamic function */ }
     const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
@@ -64,6 +64,7 @@ export default function Chart({ todos, checkedItems }) {
             {totalTasks > 0 ? (
                 <div className="w-full mt-3 bg-white">
                     <div className="">
+
                         {/* Chart */}
                         <ReactApexChart
                             options={options}
@@ -72,9 +73,10 @@ export default function Chart({ todos, checkedItems }) {
                             height="200%"
                         />
                     </div>
+
                     {/* Completed Summary */}
                     <div className="mt-3">
-                        <p className="flex justify-end font-semibold text-black">
+                        <p className="flex justify-end text-sm lg:text-base font-semibold text-black">
                             Completed (
                             {totalTasks > 0
                                 ? Math.round((completedTasks / totalTasks) * 100)
@@ -86,6 +88,7 @@ export default function Chart({ todos, checkedItems }) {
             ) : (
                 <div className="flex flex-col w-full mt-20">
                     <div className="flex justify-center">
+
                         {/* Empty Task */}
                         <Image
                             src="/notask.png"
@@ -95,10 +98,10 @@ export default function Chart({ todos, checkedItems }) {
                             className="opacity-80"
                         />
                     </div>
-                    <p className="text-gray-400 font-semibold text-center">
+                    <p className="text-gray-400 font-semibold text-sm lg:text-base text-center">
                         No tasks available today.
                     </p>
-                    <p className=" text-right font-semibold text-black mt-25">
+                    <p className=" text-right font-semibold text-sm lg:text-base text-black mt-25">
                         Completed: (0%)
                     </p>
                 </div >

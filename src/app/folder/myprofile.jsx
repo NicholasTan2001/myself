@@ -122,138 +122,145 @@ export default function MyProfilePage() {
 
     return (
         <>
-            <Navbar />
-            <Timeout />
+            <header><Navbar /></header>
 
-            {/* Title */}
-            <motion.div
-                className="flex justify-center items-center mt-10"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, ease: "easeOut" }}
-            >
-                <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-center w-[70%] lg:w-[50%]">
-                    <FontA>
-                        <h1 className="text-2xl">My Profile</h1>
-                    </FontA>
-                </div>
-            </motion.div>
+            <main className="flex flex-col max-w-screen-2xl mx-auto">
 
-            {/* Form */}
-            <motion.div
-                className="flex justify-center items-center mt-10 mb-10"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, ease: "easeOut" }}
-            >
-                <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-[90%] lg:w-[70%]">
-                    <h1 className="font-semibold text-xl mb-5">My Personal Information</h1>
+                <Timeout />
 
-                    <form className="space-y-4" onSubmit={handleUpdate}>
-                        <div>
-                            <FormInput
-                                label="Name"
-                                type="text"
-                                name="name"
-                                placeholder="Enter your name"
-                                onChange={handleChange}
-                                value={userData.name}
-                            />
-                            {errors.name && <p className="text-sm text-red-600 text-left mb-5">{errors.name}</p>}
-                        </div>
-
-                        <div>
-                            <FormInput
-                                label="Email"
-                                type="email"
-                                name="email"
-                                placeholder="Enter your email"
-                                onChange={handleChange}
-                                value={userData.email}
-                            />
-                            {errors.email && <p className="text-sm text-red-600 text-left mb-5">{errors.email}</p>}
-                        </div>
-
-                        <div>
-                            <FormInput
-                                label="Password"
-                                type="password"
-                                name="password"
-                                placeholder="Enter new password"
-                                onChange={handleChange}
-                                value={userData.password}
-                            />
-                            {errors.password && <p className="text-sm text-red-600 text-left mb-5">{errors.password}</p>}
-                        </div>
-
-                        <div>
-                            <FormInput
-                                label="Confirm Password"
-                                type="password"
-                                name="confirmPassword"
-                                placeholder="Confirm your password"
-                                onChange={handleChange}
-                                value={userData.confirmPassword}
-                            />
-                            {errors.confirmPassword && <p className="text-sm text-red-600 text-left">{errors.confirmPassword}</p>}
-                        </div>
-
-                        <div className="mt-5 flex justify-end items-center gap-5">
-                            {submitting && (
-                                <div className="animate-spin rounded-full h-5 w-5 border-3 border-blue-300 border-solid border-t-transparent"></div>
-                            )}
-                            <ButtonA type="submit" disabled={submitting}>
-                                {submitting ? "Updating..." : "Update Now"}
-                            </ButtonA>
-                        </div>
-                    </form>
-                </div>
-            </motion.div >
-
-            {/* Account Deletion */}
-            < motion.div
-                className="flex justify-center items-center mt-10 mb-10"
-                initial={{ opacity: 0, y: 50 }
-                }
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, ease: "easeOut" }}
-                viewport={{ once: true, amount: 0.1 }}
-            >
-                <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-[90%] lg:w-[70%]">
-                    <h1 className="font-semibold text-xl mb-5 text-red-500">Account Deletion</h1>
-                    <div className="font-semibold mb-5">* You are about to permanently delete your account.
-                        Once your account is deleted, all your data, settings, and personal information
-                        will be irreversibly removed from our system. If you are certain that you want to
-                        proceed, please enter your password below to confirm your decision. Only after verifying
-                        your password will the deletion process begin. Take a moment to ensure that you really
-                        want to delete your account, as this action is final and irreversible.
+                {/* Title */}
+                <motion.div
+                    className="flex justify-center items-center mt-10"
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                >
+                    <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-center w-[70%] lg:w-[50%]">
+                        <FontA>
+                            <h1 className="text-xl lg:text-2xl">My Profile</h1>
+                        </FontA>
                     </div>
+                </motion.div>
 
-                    <form onSubmit={handleDeleteAccount}>
-                        <div>
-                            <FormInput
-                                label="Password"
-                                type="password"
-                                name="deletePassword"
-                                placeholder="Enter your password"
-                                value={deletePassword}
-                                onChange={handleDeleteChange}
-                            />
-                            {deleteError && <p className="text-sm text-red-600 text-left">{deleteError}</p>}
+                {/* Form */}
+                <motion.div
+                    className="flex justify-center items-center px-10 mt-10"
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                >
+                    <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-full lg:w-[70%]">
+                        <h1 className="font-semibold text-md lg:text-lg mb-5">My Personal Information</h1>
+
+                        <form className="space-y-4" onSubmit={handleUpdate}>
+                            <div className="text-sm lg:text-base">
+                                <FormInput
+                                    label="Name"
+                                    type="text"
+                                    name="name"
+                                    placeholder="Enter your name"
+                                    onChange={handleChange}
+                                    value={userData.name}
+                                />
+                                {errors.name && <p className="text-sm text-red-600 text-left mb-5">{errors.name}</p>}
+                            </div>
+
+                            <div className="text-sm lg:text-base">
+                                <FormInput
+                                    label="Email"
+                                    type="email"
+                                    name="email"
+                                    placeholder="Enter your email"
+                                    onChange={handleChange}
+                                    value={userData.email}
+                                />
+                                {errors.email && <p className="text-sm text-red-600 text-left mb-5">{errors.email}</p>}
+                            </div>
+
+                            <div className="text-sm lg:text-base">
+                                <FormInput
+                                    label="Password"
+                                    type="password"
+                                    name="password"
+                                    placeholder="Enter new password"
+                                    onChange={handleChange}
+                                    value={userData.password}
+                                />
+                                {errors.password && <p className="text-sm text-red-600 text-left mb-5">{errors.password}</p>}
+                            </div>
+
+                            <div className="text-sm lg:text-base">
+                                <FormInput
+                                    label="Confirm Password"
+                                    type="password"
+                                    name="confirmPassword"
+                                    placeholder="Confirm your password"
+                                    onChange={handleChange}
+                                    value={userData.confirmPassword}
+                                />
+                                {errors.confirmPassword && <p className="text-sm text-red-600 text-left">{errors.confirmPassword}</p>}
+                            </div>
+
+                            <div className="mt-5 flex justify-end items-center gap-5">
+                                {submitting && (
+                                    <div className="animate-spin rounded-full h-5 w-5 border-3 border-blue-300 border-solid border-t-transparent"></div>
+                                )}
+                                <ButtonA type="submit" disabled={submitting}>
+                                    {submitting ? "Updating..." : "Update Now"}
+                                </ButtonA>
+                            </div>
+                        </form>
+                    </div>
+                </motion.div >
+
+                {/* Account Deletion */}
+                < motion.div
+                    className="flex justify-center items-center mt-10 mb-10 px-10"
+                    initial={{ opacity: 0, y: 50 }
+                    }
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    viewport={{ once: true, amount: 0.1 }}
+                >
+                    <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-full lg:w-[70%]">
+                        <h1 className="font-semibold text-md lg:text-lg mb-5 text-red-500">Account Deletion</h1>
+                        <div className="font-semibold text-sm lg:text-base mb-5">* You are about to permanently delete your account.
+                            Once your account is deleted, all your data, settings, and personal information
+                            will be irreversibly removed from our system. If you are certain that you want to
+                            proceed, please enter your password below to confirm your decision. Only after verifying
+                            your password will the deletion process begin. Take a moment to ensure that you really
+                            want to delete your account, as this action is final and irreversible.
                         </div>
 
-                        <div className="mt-5 flex justify-end items-center gap-5">
-                            {deleteLoading && (
-                                <div className="animate-spin rounded-full h-5 w-5 border-3 border-red-300 border-solid border-t-transparent"></div>
-                            )}
-                            <ButtonB type="submit" disabled={deleteLoading}>
-                                {deleteLoading ? "Deleting..." : "Delete My Account"}
-                            </ButtonB>
-                        </div>
-                    </form>
-                </div>
-            </motion.div >
-            <Footer />
+                        <form onSubmit={handleDeleteAccount}>
+                            <div className="text-sm lg:text-base">
+                                <FormInput
+                                    label="Password"
+                                    type="password"
+                                    name="deletePassword"
+                                    placeholder="Enter your password"
+                                    value={deletePassword}
+                                    onChange={handleDeleteChange}
+                                />
+                                {deleteError && <p className="text-sm text-red-600 text-left">{deleteError}</p>}
+                            </div>
+
+                            <div className="mt-5 flex justify-end items-center gap-5">
+                                {deleteLoading && (
+                                    <div className="animate-spin rounded-full h-5 w-5 border-3 border-red-300 border-solid border-t-transparent"></div>
+                                )}
+                                <ButtonB type="submit" disabled={deleteLoading}>
+                                    {deleteLoading ? "Deleting..." : "Delete My Account"}
+                                </ButtonB>
+                            </div>
+                        </form>
+                    </div>
+                </motion.div >
+
+            </main>
+
+            <footer><Footer /></footer>
+
         </>
     );
 }

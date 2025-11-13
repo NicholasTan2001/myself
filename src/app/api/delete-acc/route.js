@@ -36,6 +36,10 @@ export async function POST(req) {
         if (!isMatch)
             return NextResponse.json({ error: "*Incorrect password" }, { status: 401 });
 
+        {/* Delete record */ }
+        await prisma.record.deleteMany({
+            where: { userId: decoded.userId },
+        });
         {/* Delete Daily List */ }
         await prisma.dailyList.deleteMany({
             where: { userId: decoded.userId },

@@ -3,19 +3,23 @@ import React from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 
-export default function Chart({ todos, checkedItems }) {
+export default function ChartSpecialList({ todos, checkedItems }) {
 
+    {/* Import react-apexcharts with dynamic function */ }
     const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
+    {/* Data from .jsx page */ }
     const totalTasks = todos.length;
     const completedTasks = Object.values(checkedItems).filter(Boolean).length;
 
+    {/* Map data into chart */ }
     const series = todos.map(() => 1);
     const labels = todos.map((t) => t.name);
     const colors = todos.map((_, index) =>
         checkedItems[index] ? "#f08686ff" : "#bbc1caff"
     );
 
+    {/* Chart Style*/ }
     const options = {
         chart: {
             type: "pie",
@@ -60,6 +64,7 @@ export default function Chart({ todos, checkedItems }) {
                 <div className="w-full mt-3 bg-white ">
                     <div className="">
 
+                        {/* Chart */}
                         <ReactApexChart
                             options={options}
                             series={series}
@@ -67,9 +72,10 @@ export default function Chart({ todos, checkedItems }) {
                             height="200%"
                         />
                     </div>
+
                     {/* Completed Summary */}
                     <div className="mt-3">
-                        <p className="flex justify-end font-semibold text-black">
+                        <p className="flex justify-end font-semibold text-sm lg:text-base text-black">
                             Completed (
                             {totalTasks > 0
                                 ? Math.round((completedTasks / totalTasks) * 100)
@@ -81,6 +87,8 @@ export default function Chart({ todos, checkedItems }) {
             ) : (
                 <div className="flex flex-col w-full mt-20">
                     <div className="flex justify-center">
+
+                        {/* Empty Task */}
                         <Image
                             src="/notask.png"
                             alt="No tasks"
@@ -89,10 +97,10 @@ export default function Chart({ todos, checkedItems }) {
                             className="opacity-80"
                         />
                     </div>
-                    <p className="text-gray-400 font-semibold text-center ">
+                    <p className="text-gray-400 font-semibold text-sm lg:text-base text-center ">
                         No tasks available today.
                     </p>
-                    <p className=" text-right font-semibold text-black mt-25">
+                    <p className=" text-right font-semibold text-sm lg:text-base text-black mt-25">
                         Completed: (0%)
                     </p>
                 </div >

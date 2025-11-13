@@ -102,11 +102,11 @@ export default function RegisterPage() {
                 />
 
                 {/* Welcome Text */}
-                <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 mb-7 max-w-full truncate">Register to MySelf</h1>
+                <h1 className="text-xl lg:text-2xl font-bold text-gray-800 mb-7 max-w-full truncate">Register to MySelf</h1>
 
                 {/* Register Form */}
                 <form onSubmit={handleSubmit}>
-                    <div className="w-full mb-4">
+                    <div className="w-full mb-4 text-sm lg:text-base">
                         <FormInput
                             label="Username"
                             type="text"
@@ -118,7 +118,7 @@ export default function RegisterPage() {
                             <p className="text-sm text-red-600 text-center">{nameError}</p>
                         )}
                     </div>
-                    <div className="w-full mb-4">
+                    <div className="w-full mb-4 text-sm lg:text-base">
                         <FormInput
                             label="Email Address"
                             type="email"
@@ -130,7 +130,7 @@ export default function RegisterPage() {
                             <p className="text-sm text-red-600 text-center">{emailError}</p>
                         )}
                     </div>
-                    <div className="w-full mb-4">
+                    <div className="w-full mb-4 text-sm lg:text-base">
                         <FormInput
                             label="Password"
                             type="password"
@@ -143,7 +143,7 @@ export default function RegisterPage() {
                         )}
                     </div>
 
-                    <div className="w-full">
+                    <div className="w-full text-sm lg:text-base">
                         <FormInput
                             label="Confirm Password"
                             type="password"
