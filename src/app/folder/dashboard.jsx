@@ -24,10 +24,7 @@ export default function DashboardPage() {
 
     {/* Function: create current Malaysia date */ }
     const now = new Date();
-    const malaysiaOffset = 8 * 60;
-    const malaysiaDate = new Date(now.getTime() + malaysiaOffset * 60 * 1000);
-
-    const today = malaysiaDate.toLocaleDateString("en-MY", {
+    const today = now.toLocaleDateString("en-MY", {
         weekday: "long",
         year: "numeric",
         month: "long",

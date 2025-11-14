@@ -28,7 +28,9 @@ export async function GET(req) {
         const malaysiaOffset = 8 * 60;
         const malaysiaDate = new Date(now.getTime() + malaysiaOffset * 60 * 1000);
         const today = new Date(malaysiaDate.getTime());
-        today.setHours(0, 0, 0, 0);
+        today.setUTCHours(0, 0, 0, 0);
+
+        console.log(today);
 
         {/* Find and check daily list update date */ }
         const dailyToReset = await prisma.dailyList.findMany({
@@ -93,7 +95,7 @@ export async function GET(req) {
 
                 const currentDay = getWeekday(tempDate);
 
-                if (targetDate.getTime() == tempDate.getTime() || currentDay == targetDay) {
+                if (targetDate === tempDate || currentDay == targetDay) {
 
                     specialRecords.push({
                         name: task.name,
