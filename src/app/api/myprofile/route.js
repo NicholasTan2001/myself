@@ -42,6 +42,11 @@ export async function GET(req) {
 export async function PATCH(req) {
     try {
 
+        {/* Get Malaysia current date */ }
+        const now = new Date();
+        const malaysiaOffset = 8 * 60;
+        const malaysiaDate = new Date(now.getTime() + malaysiaOffset * 60 * 1000);
+
         {/* Token Verification */ }
         const token = req.cookies.get("token")?.value;
 
@@ -60,7 +65,7 @@ export async function PATCH(req) {
         }
 
         {/* encryt password */ }
-        const updateData = { name, email };
+        const updateData = { name, email, updatedAt: malaysiaDate };
         if (password) {
             const hashedPassword = await bcrypt.hash(password, 10);
             updateData.password = hashedPassword;
@@ -70,7 +75,7 @@ export async function PATCH(req) {
         const updatedUser = await prisma.user.update({
             where: { id: decoded.userId },
             data: updateData,
-            select: { id: true, name: true, email: true },
+            select: { id: true, name: true, email: true, updatedAt: true },
         });
 
         return NextResponse.json({ message: "*Profile updated successfully", user: updatedUser });

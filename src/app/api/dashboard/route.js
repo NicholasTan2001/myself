@@ -16,7 +16,9 @@ export async function GET(req) {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || "dev-secret");
 
         {/* Get today date with format */ }
-        const today = new Date();
+        const now = new Date();
+        const malaysiaOffset = 8 * 60;
+        const today = new Date(now.getTime() + malaysiaOffset * 60 * 1000);
         const startOfDay = new Date(today.setHours(0, 0, 0, 0));
         const endOfDay = new Date(today.setHours(23, 59, 59, 999));
 

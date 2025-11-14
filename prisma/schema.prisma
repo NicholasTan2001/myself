@@ -19,8 +19,8 @@ model User {
   name       String
   email      String   @unique
   password   String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt DateTime 
+  updatedAt  DateTime 
 
   dailyLists DailyList[]
   specialLists SpecialList[]
@@ -34,8 +34,8 @@ model DailyList {
   userId    Int
   check     String?
   user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime 
+  updatedAt DateTime 
 }
 
 model SpecialList {
@@ -47,8 +47,8 @@ model SpecialList {
   check     String?
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime
+  updatedAt DateTime
 }
 
 model Record {
@@ -61,7 +61,7 @@ model Record {
   listId    Int
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime 
+  updatedAt DateTime 
 }
 

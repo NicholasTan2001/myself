@@ -6,6 +6,12 @@ import { prisma } from "../../../../lib/prisma";
 export async function PATCH(req) {
 
     try {
+
+        {/* Get Malaysia current date */ }
+        const now = new Date();
+        const malaysiaOffset = 8 * 60;
+        const malaysiaDate = new Date(now.getTime() + malaysiaOffset * 60 * 1000);
+
         {/* Token Verification */ }
         const token = req.cookies.get("token")?.value;
         if (!token) {
@@ -41,6 +47,7 @@ export async function PATCH(req) {
                 date: validDate,
                 week: week,
                 userId: decoded.userId,
+                updatedAt: malaysiaDate
             },
             select: { id: true, name: true, remark: true, date: true, week: true }
         });

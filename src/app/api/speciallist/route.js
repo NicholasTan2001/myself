@@ -5,6 +5,12 @@ import jwt from "jsonwebtoken";
 {/* Function: create Special List */ }
 export async function POST(req) {
     try {
+
+        {/* Get Malaysia current date */ }
+        const now = new Date();
+        const malaysiaOffset = 8 * 60;
+        const malaysiaDate = new Date(now.getTime() + malaysiaOffset * 60 * 1000);
+
         {/* Token Verification */ }
         const token = req.cookies.get("token")?.value;
         if (!token) {
@@ -39,6 +45,8 @@ export async function POST(req) {
                 date: validDate,
                 week: validWeek,
                 userId: decoded.userId,
+                createdAt: malaysiaDate,
+                updatedAt: malaysiaDate
             },
         });
 

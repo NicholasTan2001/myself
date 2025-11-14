@@ -6,6 +6,13 @@ import bcrypt from 'bcryptjs';
 export async function POST(request) {
     try {
 
+        {/* Get Malaysia current date */ }
+        const now = new Date();
+        const malaysiaOffset = 8 * 60;
+        const malaysiaDate = new Date(now.getTime() + malaysiaOffset * 60 * 1000);
+
+        console.log(malaysiaDate);
+
         {/* Data from .jsx file */ }
         const body = await request.json();
         const { name, email, password, confirmPassword } = body;
@@ -43,8 +50,14 @@ export async function POST(request) {
 
         {/* Create new user */ }
         const user = await prisma.user.create({
-            data: { name, email, password: hashed },
-        });
+            data: {
+                name,
+                email,
+                password: hashed,
+                createdAt: malaysiaDate,
+                updatedAt: malaysiaDate
+            },
+        })
 
         return NextResponse.json({ ok: true, user });
     } catch (err) {

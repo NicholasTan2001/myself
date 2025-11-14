@@ -6,6 +6,11 @@ import { prisma } from "../../../../lib/prisma";
 export async function PATCH(req) {
     try {
 
+        {/* Get Malaysia current date */ }
+        const now = new Date();
+        const malaysiaOffset = 8 * 60;
+        const malaysiaDate = new Date(now.getTime() + malaysiaOffset * 60 * 1000);
+
         {/* Token Verification */ }
         const token = req.cookies.get("token")?.value;
         if (!token) {
@@ -15,7 +20,7 @@ export async function PATCH(req) {
         {/* userId is taken from token and get data from .jsx page */ }
         const decoded = jwt.verify(token, process.env.JWT_SECRET || "dev-secret");
         const { id, name, remark } = await req.json();
-        const updateData = { id, name, remark };
+        const updateData = { id, name, remark, updatedAt: malaysiaDate };
 
         {/* Name and remark can't be null */ }
         if (!name || !remark) {
@@ -29,7 +34,7 @@ export async function PATCH(req) {
                 userId: decoded.userId,
             },
             data: updateData,
-            select: { id: true, name: true, remark: true },
+            select: { id: true, name: true, remark: true, updatedAt: true },
         });
 
         return NextResponse.json({ task });

@@ -2,15 +2,20 @@ import { NextResponse } from "next/server";
 import { prisma } from "../../../../lib/prisma";
 import jwt from "jsonwebtoken";
 
+{/* Function: sort and create daily to-do list frequency chart */ }
 export async function GET(req) {
     try {
+
+        {/* Token Verification */ }
         const token = req.cookies.get("token")?.value;
         if (!token)
             return NextResponse.json({ error: "*No token found" }, { status: 401 });
 
+        {/* userId is taken from token and get data from .jsx page */ }
         const decoded = jwt.verify(token, process.env.JWT_SECRET || "dev-secret");
         const userId = decoded.userId;
 
+        {/* Get all the dailylist type of data from record */ }
         const dailyRecords = await prisma.record.findMany({
             where: {
                 userId,
@@ -19,6 +24,7 @@ export async function GET(req) {
             orderBy: { date: "asc" },
         });
 
+        {/* Get the spesific range of date from the dailylist record */ }
         const countsByDate = dailyRecords.reduce((acc, record) => {
             const date = new Date(record.date).toISOString().split("T")[0];
 
@@ -30,6 +36,7 @@ export async function GET(req) {
             return acc;
         }, {});
 
+        {/* Map and sort the data correctly */ }
         const data = Object.entries(countsByDate)
             .sort(([a], [b]) => new Date(a) - new Date(b))
             .map(([date, { total, trueCount }]) => ({

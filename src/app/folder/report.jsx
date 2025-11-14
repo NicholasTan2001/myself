@@ -36,9 +36,14 @@ export default function ReportPage() {
     const [tempFreqTo2, setTempFreqTo2] = useState("");
     const [specialFreError, setSpecialFreError] = useState("");
 
+    {/* Function: create current Malaysia date */ }
+    const now = new Date();
+    const malaysiaOffset = 8 * 60;
+    const malaysiaDate = new Date(now.getTime() + malaysiaOffset * 60 * 1000);
+
     {/* Effect: sort the first 10 days of to-do list frequency*/ }
     useEffect(() => {
-        const today = new Date();
+        const today = malaysiaDate;
         const yesterday = new Date(today);
         yesterday.setDate(today.getDate() - 1);
         const tenDaysAgo = new Date(today);

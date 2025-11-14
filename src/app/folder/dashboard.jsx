@@ -22,8 +22,12 @@ export default function DashboardPage() {
     const totalChecked = Object.values(checkedItems).filter(Boolean).length;
     const totalSpecialChecked = Object.values(specialChecked).filter(Boolean).length;
 
-    {/* Function: create current date */ }
-    const today = new Date().toLocaleDateString("en-MY", {
+    {/* Function: create current Malaysia date */ }
+    const now = new Date();
+    const malaysiaOffset = 8 * 60;
+    const malaysiaDate = new Date(now.getTime() + malaysiaOffset * 60 * 1000);
+
+    const today = malaysiaDate.toLocaleDateString("en-MY", {
         weekday: "long",
         year: "numeric",
         month: "long",
@@ -177,7 +181,7 @@ export default function DashboardPage() {
                 </motion.div>
 
                 {/* Two To-Do Lists Side by Side */}
-                <div className="flex flex-col lg:flex-row justify-center items-start gap-10 mt-10 mb-10 lg:px-20 px-10">
+                <div className="flex flex-col lg:flex-row justify-center items-start gap-10 mt-10 lg:px-20 px-10">
                     {/* Daily To-Do List */}
                     <motion.div
                         className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-full lg:w-1/2"
