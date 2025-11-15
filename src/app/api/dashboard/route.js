@@ -18,9 +18,10 @@ export async function GET(req) {
         {/* Get today date with format */ }
         const now = new Date();
         const malaysiaOffset = 8 * 60;
-        const today = new Date(now.getTime() + malaysiaOffset * 60 * 1000);
+        const malaysiaDate = new Date(now.getTime() + malaysiaOffset * 60 * 1000);
+        const today = new Date(malaysiaDate.getTime());
         const startOfDay = new Date(today.setHours(0, 0, 0, 0));
-        const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+        const endOfDay = new Date(today.setUTCHours(23, 59, 59, 999));
 
         {/* Get today day with format */ }
         const todayWeek = new Date().toLocaleDateString("en-MY", { weekday: "long" });
