@@ -137,7 +137,7 @@ export default function MyProfilePage() {
                 >
                     <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-center w-[70%] lg:w-[50%]">
                         <FontA>
-                            <h1 className="text-xl lg:text-2xl">My Profile</h1>
+                            <h1 className="text-xl lg:text-2xl">🗃️ My Profile</h1>
                         </FontA>
                     </div>
                 </motion.div>

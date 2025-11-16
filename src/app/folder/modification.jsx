@@ -11,6 +11,7 @@ import FormInput from "../components/FormInput";
 import FormDay from "../components/FormDay";
 import ButtonA from "../components/ButtonA";
 import ButtonB from "../components/ButtonB";
+import FormImportant from "../components/FormImportant";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -35,6 +36,10 @@ export default function ModificationPage() {
     const [removing, setRemoving] = useState(false);
     const [selectedTask2, setSelectedTask2] = useState(null);
     const [specialError2, setSpecialError2] = useState({ name: "", remark: "" });
+    const [noteData, setNoteData] = useState({ name: "", important: "" });
+    const [noteDataError, setNoteDataError] = useState(null);
+    const [submittingNote, setSubmittingNote] = useState(null);
+
 
     {/* Effect: make sure first effect is show before 4.5 seconds */ }
     useEffect(() => {
@@ -273,6 +278,39 @@ export default function ModificationPage() {
         }
     };
 
+    {/* Function: submit new note*/ }
+    const handleSubmitNoteData = async (e) => {
+        e.preventDefault();
+        setNoteDataError("");
+        setMessage("");
+
+        if (!noteData.name) {
+            setNoteDataError("*Note is required");
+            return;
+        }
+
+        setSubmittingNote(true);
+
+        try {
+            const res = await fetch("/api/note", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(noteData),
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "*Failed to add note");
+
+            setNoteData({ important: "", name: "" });
+            router.push("/auth/dashboard");
+        } catch (err) {
+            setMessage(err.message);
+
+        } finally {
+            setSubmittingNote(false);
+        }
+    };
+
     return (
         <>
             <header><Navbar /></header>
@@ -290,7 +328,7 @@ export default function ModificationPage() {
                 >
                     <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-center w-[70%] lg:w-[50%]">
                         <FontA>
-                            <h1 className="text-xl lg:text-2xl">Modification</h1>
+                            <h1 className="text-xl lg:text-2xl">🛠️ Modification</h1>
                         </FontA>
                     </div>
                 </motion.div>
@@ -343,11 +381,11 @@ export default function ModificationPage() {
                             </h1>
                             <p className="text-gray-500 text-md lg:text-lg font-semibold px-10 mb-5">
                                 {isSpecial
-                                    ? "*Add a new special to-do list with date and week."
-                                    : "*Add a new daily to-do list."}
+                                    ? "*Add a new special to-do list with date and week"
+                                    : "*Add a new daily to-do list"}
                             </p>
 
-                            {/*New Special & Daily Task Request Form */}
+                            {/* New Special & Daily Task Request Form */}
                             {isSpecial ? (
                                 <form onSubmit={handleSubmitSpecial}>
                                     <div className="w-full px-10">
@@ -749,7 +787,6 @@ export default function ModificationPage() {
                                                     onChange={(e) => {
                                                         setSelectedTask2({ ...selectedTask2, remark: e.target.value })
                                                         setSpecialError2((prev) => ({ ...prev, remark: "" }));
-
                                                     }}
                                                 />
 
@@ -779,7 +816,72 @@ export default function ModificationPage() {
                     </AnimatePresence>
                 </div >
 
-            </main>
+                {/* New Note Request Form */}
+                <div className="flex justify-center items-center px-10 mb-10">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            className="relative bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-5 py-5 text-left w-full lg:w-[70%]"
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1, ease: "easeOut" }}
+                            viewport={{ once: true, amount: 0.1 }}
+                        >
+                            <div className="px-5">
+                                <h1 className="font-semibold text-md lg:text-lg">New Note</h1>
+                                <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
+                                    *Add a new note
+                                </h1>
+
+                                <form onSubmit={handleSubmitNoteData}>
+                                    <div className="w-full lg:w-[50%] lg:flex-3 text-sm lg:text-base">
+                                        <FormImportant
+                                            label="Importance"
+                                            type="select"
+                                            name="important"
+                                            value={noteData.important}
+                                            onChange={(e) => {
+                                                setNoteData({ ...noteData, important: e.target.value })
+                                            }}
+
+                                        />
+                                    </div>
+                                    <h1 className="font-semibold text-sm lg:text-base mb-5">What masterpiece of a note are you dropping here?</h1>
+                                    <textarea
+                                        label="note"
+                                        name="name"
+                                        placeholder="Enter your note"
+                                        className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:border-blue-500 focus:shadow-[0_0_10px_rgba(59,130,246,0.5)] focus:outline-none transition-all duration-300"
+                                        rows="5"
+                                        value={noteData.name}
+                                        onChange={(e) => {
+                                            setNoteData({ ...noteData, name: e.target.value })
+                                            setNoteDataError("");
+
+                                        }}
+                                    ></textarea>
+
+                                    {noteDataError && (
+                                        <p className="text-red-500 text-sm text-left mt-3">{noteDataError}</p>
+                                    )}
+
+                                    <div className="mt-5 flex justify-end items-center gap-5">
+
+                                        {submittingNote && (
+
+                                            <div className="animate-spin rounded-full h-5 w-5 border-3 border-blue-300 border-solid border-t-transparent"></div>
+
+                                        )}
+                                        <ButtonA className="" type="submit">{submittingNote ? "Adding..." : "Add Note"}</ButtonA>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
+
+            </main >
 
             <footer><Footer /></footer>
         </>

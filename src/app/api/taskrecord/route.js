@@ -30,8 +30,6 @@ export async function GET(req) {
         const today = new Date(malaysiaDate.getTime());
         today.setUTCHours(0, 0, 0, 0);
 
-        console.log(today);
-
         {/* Find and check daily list update date */ }
         const dailyToReset = await prisma.dailyList.findMany({
             where: { userId, updatedAt: { lt: today } },

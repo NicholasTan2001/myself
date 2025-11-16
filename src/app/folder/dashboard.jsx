@@ -17,6 +17,8 @@ export default function DashboardPage() {
     const [specialChecked, setSpecialChecked] = useState({});
     const [todos, setTodos] = useState([]);
     const [specialTodos, setSpecialTodos] = useState([]);
+    const [noteData, setNoteData] = useState([]);
+    const [expandedNotes, setExpandedNotes] = useState({});
 
     {/* Function: check item is checked or not */ }
     const totalChecked = Object.values(checkedItems).filter(Boolean).length;
@@ -95,6 +97,24 @@ export default function DashboardPage() {
         return () => clearTimeout(timer);
     }, []);
 
+    {/* Effect: get fetch to note api */ }
+    useEffect(() => {
+        const fetchNoteData = async () => {
+            try {
+                const res = await fetch("/api/note");
+                const data = await res.json();
+
+                if (!data.error) {
+                    setNoteData(data.noteData);
+                }
+            } catch (err) {
+                console.error("*Error fetching tasks:", err);
+            }
+        };
+        const timer = setTimeout(fetchNoteData, 2900);
+        return () => clearTimeout(timer);
+    }, []);
+
     {/* Function: loading page */ }
     if (loading) return <Loading />;
 
@@ -155,6 +175,20 @@ export default function DashboardPage() {
             return a.index - b.index;
         });
 
+    {/* Function: Make short sentences */ }
+    const getShortText = (text) => {
+        const words = text.split(" ");
+        if (words.length <= 10) return text;
+
+        const firstPart = words.slice(0, 10).join(" ");
+        return (
+            <>
+                {firstPart}
+                <span className="text-gray-400 font-semibold"> ... ... ... More </span>
+            </>
+        );
+    };
+
     return (
         <>
             <header><Navbar /></header>
@@ -172,7 +206,7 @@ export default function DashboardPage() {
                 >
                     <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-center w-[70%] lg:w-[50%]">
                         <FontA>
-                            <h1 className="text-xl lg:text-2xl">Dashboard - {today}</h1>
+                            <h1 className="text-xl lg:text-2xl">📅 Dashboard - {today}</h1>
                         </FontA>
                     </div>
                 </motion.div>
@@ -341,23 +375,126 @@ export default function DashboardPage() {
                     </motion.div>
                 </div>
 
-                {/* Daily Report */}
+
+
+
+
+
+                {/* Reminder Note */}
                 <motion.div
                     className="flex justify-center items-center mt-10"
                     initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, ease: "easeOut" }}
                     viewport={{ once: true, amount: 0.1 }}
+
                 >
                     <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-center w-[70%] lg:w-[50%]">
                         <FontA>
-                            <h1 className="text-xl lg:text-2xl">Daily Report</h1>
+                            <h1 className="text-xl lg:text-2xl">📝 Reminder Note</h1>
                         </FontA>
                     </div>
                 </motion.div>
 
+                <div className="flex justify-center mt-10 lg:px-20 gap-3">
+                    <motion.div
+                        className="mb-10 w-full px-10 lg:w-[80%] max-w-[1600px]"
+                        initial={{ opacity: 0, y: 50 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1, ease: "easeOut" }}
+                        viewport={{ once: true, amount: 0.1 }}
+                    >
+                        <div className="flex flex-col bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 lg:px-10">
+
+                            <h1 className="font-semibold text-md lg:text-lg">Note List</h1>
+                            <h1 className="font-semibold text-md lg:text-lg text-gray-500">
+                                *Note that need to remind in lifestyle.
+                            </h1>
+
+                            <div className="flex flex-col">
+                                {noteData.length > 0 ? (
+                                    noteData
+                                        .sort((a, b) => {
+                                            if (a.important == "Important" && b.important != "Important") return -1;
+                                            if (a.important != "Important" && b.important == "Important") return 1;
+                                            return 0;
+                                        })
+                                        .map((note) => (
+                                            <div
+                                                key={note.id}
+                                                onClick={() =>
+                                                    setExpandedNotes((prev) => ({
+                                                        ...prev,
+                                                        [note.id]: !prev[note.id],
+                                                    }))
+                                                }
+                                                className="group font-semibold text-sm lg:text-base rounded-lg mt-5 cursor-pointer hover:bg-blue-100 p-3 outline-none hover:shadow-[0_0_10px_rgba(191,219,254,1)] active:bg-blue-300"
+                                            >
+                                                {note.important == "Important" ? (
+                                                    <p className="text-red-300 group-active:text-white">• Important Note</p>
+                                                ) : (
+                                                    <p className="text-blue-300 group-active:text-white">• Normal Note</p>
+                                                )}
+
+                                                <p className="text-black group-active:text-white">
+                                                    Note:{" "}
+                                                    {expandedNotes[note.id]
+                                                        ? note.name
+                                                        : getShortText(note.name)}
+                                                </p>
+                                            </div>
+
+                                        ))
+                                ) : (
+                                    <>
+                                        <div className="flex flex-col justify-center items-center">
+                                            <Image
+                                                src="/notask.png"
+                                                alt="No tasks"
+                                                width={120}
+                                                height={120}
+                                                className="opacity-80"
+                                            />
+                                            <p className="text-gray-400 text-sm lg:text-base font-semibold text-center">
+                                                No note available.
+                                            </p>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    </motion.div >
+
+                </div >
+
+
+
+
+
+
+
+
+
+
+
+                {/* Daily Report */}
+                < motion.div
+                    className="flex justify-center items-center"
+                    initial={{ opacity: 0, y: 50 }
+                    }
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    viewport={{ once: true, amount: 0.1 }}
+                >
+                    <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-center w-[70%] lg:w-[50%]">
+                        <FontA>
+                            <h1 className="text-xl lg:text-2xl">📚 Daily Report</h1>
+                        </FontA>
+                    </div>
+                </motion.div >
+
                 {/* Special and Daily List Chart */}
-                <div className="flex justify-center px-10 mt-10 lg:px-20">
+                < div className="flex justify-center px-10 mt-10 lg:px-20" >
                     <motion.div
                         className="mb-10 w-full max-w-[1600px]"
                         initial={{ opacity: 0, y: 50 }}
@@ -369,7 +506,7 @@ export default function DashboardPage() {
                             <div className="flex flex-col lg:flex-row justify-center gap-10 lg:gap-20">
                                 {/* Daily To-Do Chart */}
                                 <div className="flex-1">
-                                    <h2 className="font-semibold text-md lg:text-lg mb-2 text-left">
+                                    <h2 className="font-semibold text-md lg:text-lg text-left">
                                         Daily To-Do List Chart
                                     </h2>
                                     <p className="font-semibold text-md lg:text-lg text-gray-500 mb-3 text-left">
@@ -380,7 +517,7 @@ export default function DashboardPage() {
 
                                 {/* Special To-Do Chart */}
                                 <div className="flex-1">
-                                    <h2 className="font-semibold text-md lg:text-lg mb-2 text-left">
+                                    <h2 className="font-semibold text-md lg:text-lg text-left">
                                         Special To-Do List Chart
                                     </h2>
                                     <p className="font-semibold text-md lg:text-lg text-gray-500 mb-3 text-left">
@@ -391,9 +528,8 @@ export default function DashboardPage() {
                             </div>
                         </div>
                     </motion.div>
-                </div>
-
-            </main>
+                </div >
+            </main >
 
             <footer><Footer /></footer>
 

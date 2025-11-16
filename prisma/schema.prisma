@@ -25,6 +25,7 @@ model User {
   dailyLists DailyList[]
   specialLists SpecialList[]
   records Record[]
+  note Note[]
 }
 
 model DailyList {
@@ -59,6 +60,16 @@ model Record {
   type      String
   check     String?
   listId    Int
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime 
+  updatedAt DateTime 
+}
+
+model Note {
+  id        Int      @id @default(autoincrement())
+  name      String
+  important String?
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime 

@@ -20,7 +20,7 @@ export async function GET(req) {
         const malaysiaOffset = 8 * 60;
         const malaysiaDate = new Date(now.getTime() + malaysiaOffset * 60 * 1000);
         const today = new Date(malaysiaDate.getTime());
-        const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+        const startOfDay = new Date(today.setUTCHours(0, 0, 0, 0));
         const endOfDay = new Date(today.setUTCHours(23, 59, 59, 999));
 
         {/* Get today day with format */ }
