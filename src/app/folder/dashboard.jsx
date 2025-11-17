@@ -375,11 +375,6 @@ export default function DashboardPage() {
                     </motion.div>
                 </div>
 
-
-
-
-
-
                 {/* Reminder Note */}
                 <motion.div
                     className="flex justify-center items-center mt-10"
@@ -464,18 +459,7 @@ export default function DashboardPage() {
                             </div>
                         </div>
                     </motion.div >
-
                 </div >
-
-
-
-
-
-
-
-
-
-
 
                 {/* Daily Report */}
                 < motion.div

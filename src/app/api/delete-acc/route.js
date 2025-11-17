@@ -50,6 +50,11 @@ export async function POST(req) {
             where: { userId: decoded.userId },
         });
 
+        {/* Delete Note */ }
+        await prisma.note.deleteMany({
+            where: { userId: decoded.userId },
+        });
+
         {/* Delete user */ }
         await prisma.user.delete({
             where: { id: decoded.userId },

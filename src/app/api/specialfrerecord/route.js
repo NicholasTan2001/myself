@@ -16,7 +16,7 @@ export async function GET(req) {
         const userId = decoded.userId;
 
         {/* Get all the speciallist type of data from record */ }
-        const dailyRecords = await prisma.record.findMany({
+        const specialRecords = await prisma.record.findMany({
             where: {
                 userId,
                 type: "speciallist",
@@ -25,7 +25,7 @@ export async function GET(req) {
         });
 
         {/* Get the spesific range of date from the sepciallist record */ }
-        const countsByDate = dailyRecords.reduce((acc, record) => {
+        const countsByDate = specialRecords.reduce((acc, record) => {
             const date = new Date(record.date).toISOString().split("T")[0];
 
             if (!acc[date]) acc[date] = { total: 0, trueCount: 0 };

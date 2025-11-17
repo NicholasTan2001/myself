@@ -39,6 +39,11 @@ export default function ModificationPage() {
     const [noteData, setNoteData] = useState({ name: "", important: "" });
     const [noteDataError, setNoteDataError] = useState(null);
     const [submittingNote, setSubmittingNote] = useState(null);
+    const [noteShow, setNoteShow] = useState([]);
+    const [noteSelected, setNoteSelected] = useState(null);
+    const [noteUpdateError, setNoteUpdateError] = useState([]);
+    const [noteUpdateLoading, setNoteUpdateLoading] = useState(false);
+    const [removingNote, setRemovingNote] = useState(false);
 
 
     {/* Effect: make sure first effect is show before 4.5 seconds */ }
@@ -88,6 +93,25 @@ export default function ModificationPage() {
         };
 
         const timer = setTimeout(fetchSpecialTasks, 3000);
+        return () => clearTimeout(timer);
+    }, []);
+
+
+    {/* Effect: get fetch to note api */ }
+    useEffect(() => {
+        const fetchNoteData = async () => {
+            try {
+                const res = await fetch("/api/note");
+                const data = await res.json();
+
+                if (!data.error) {
+                    setNoteShow(data.noteData);
+                }
+            } catch (err) {
+                console.error("*Error fetching tasks:", err);
+            }
+        };
+        const timer = setTimeout(fetchNoteData, 2900);
         return () => clearTimeout(timer);
     }, []);
 
@@ -308,6 +332,61 @@ export default function ModificationPage() {
 
         } finally {
             setSubmittingNote(false);
+        }
+    };
+
+    {/* Function: update note */ }
+    const handleUpdateNote = async (e) => {
+        e.preventDefault();
+
+        if (!noteSelected.name) {
+            setNoteUpdateError("*Note is required");
+            return;
+        }
+
+        setNoteUpdateLoading(true);
+
+        try {
+            const res = await fetch("/api/noteupdate", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: noteSelected.id,
+                    name: noteSelected.name,
+                    important: noteSelected.important,
+                }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Failed to update note");
+
+            window.location.reload();
+        } catch (err) {
+
+        } finally {
+            setNoteUpdateLoading(false);
+        }
+    };
+
+    {/* Function: delete note */ }
+    const handleDeleteNote = async (e) => {
+        e.preventDefault();
+
+        setRemovingNote(true);
+
+        try {
+            const res = await fetch("/api/noteupdate", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: noteSelected.id }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Failed to delete note");
+
+            window.location.reload();
+        } catch (err) {
+
         }
     };
 
@@ -827,7 +906,7 @@ export default function ModificationPage() {
                             viewport={{ once: true, amount: 0.1 }}
                         >
                             <div className="px-5">
-                                <h1 className="font-semibold text-md lg:text-lg">New Note</h1>
+                                <h1 className="font-semibold text-md lg:text-lg">New Note Request</h1>
                                 <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
                                     *Add a new note
                                 </h1>
@@ -871,7 +950,7 @@ export default function ModificationPage() {
                                             <div className="animate-spin rounded-full h-5 w-5 border-3 border-blue-300 border-solid border-t-transparent"></div>
 
                                         )}
-                                        <ButtonA className="" type="submit">{submittingNote ? "Adding..." : "Add Note"}</ButtonA>
+                                        <ButtonA type="submit">{submittingNote ? "Adding..." : "Add Note"}</ButtonA>
                                     </div>
 
                                 </form>
@@ -880,6 +959,141 @@ export default function ModificationPage() {
                         </motion.div>
                     </AnimatePresence>
                 </div>
+
+                <div className="flex flex-col lg:flex-row justify-center items-start px-10 mb-10 gap-10">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            className="relative bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-5 py-5 text-left w-full lg:w-[50%] "
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1, ease: "easeOut" }}
+                            viewport={{ once: true, amount: 0.1 }}
+                        >
+
+                            <div className="px-5">
+                                <h1 className="font-semibold text-md lg:text-lg">Modification Note</h1>
+                                <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
+                                    *Modify your current note
+                                </h1>
+
+                                {noteShow.length > 0 ? (
+                                    noteShow
+                                        .sort((a, b) => {
+                                            if (a.important == "Important" && b.important != "Important") return -1;
+                                            if (a.important != "Important" && b.important == "Important") return 1;
+                                            return 0;
+                                        })
+                                        .map((note) => (
+                                            <div
+                                                key={note.id}
+                                                onClick={() => setNoteSelected(note)}
+                                                className={`font-semibold group flex flex-col cursor-pointer mb-3 text-sm lg:text-base rounded-lg px-3 py-2 select-none 
+                                                            transition-all duration-300 ease-in-out
+                    ${noteSelected?.id === note.id ? "bg-blue-300 text-white shadow-[0_0_10px_rgba(191,219,254,1)]" : "hover:bg-blue-100 hover:shadow-[0_0_10px_rgba(191,219,254,1)]"}`}
+                                            >
+                                                {note.important == "Important" ? (
+                                                    <p className={noteSelected?.id === note.id ? "text-white" : "text-red-300"}>
+                                                        • Important
+                                                    </p>
+                                                ) : (
+                                                    <p className={noteSelected?.id === note.id ? "text-white" : "text-blue-300"}>
+                                                        • Normal
+                                                    </p>
+                                                )}
+
+                                                <p className={noteSelected?.id === note.id ? "text-white" : "text-black"}>
+                                                    Note: {note.name}
+                                                </p>
+                                            </div>
+                                        ))
+                                ) : (
+                                    <>
+                                        <div className="flex flex-col justify-center items-center">
+                                            <Image
+                                                src="/notask.png"
+                                                alt="No tasks"
+                                                width={120}
+                                                height={120}
+                                                className="opacity-80"
+                                            />
+                                            <p className="text-gray-400 text-sm lg:text-base font-semibold text-center">
+                                                No note available.
+                                            </p>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </motion.div>
+                    </AnimatePresence>
+
+                    <AnimatePresence mode="wait">
+                        {noteSelected && (
+                            <motion.div
+                                key={noteSelected}
+                                className="relative bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-5 py-5 text-left w-full lg:w-[30%]"
+                                initial={{ opacity: 0, x: -100 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -100 }}
+                                transition={{ duration: 1, ease: "easeIn" }}
+                            >
+                                <div className="px-5">
+                                    <h1 className="font-semibold text-md lg:text-lg">Modification Note Selected</h1>
+                                    <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
+                                        *Modify your selected note
+                                    </h1>
+
+                                    <form onSubmit={handleUpdateNote}>
+                                        <FormImportant
+                                            label="Importance"
+                                            type="select"
+                                            name="important"
+                                            value={noteSelected?.important || ""}
+                                            onChange={(e) => {
+                                                setNoteSelected({ ...noteSelected, important: e.target.value })
+                                            }}
+                                        />
+
+                                        <h1 className="font-semibold text-sm lg:text-base mb-2">Modify your note here: </h1>
+                                        <textarea
+                                            label="note"
+                                            name="name"
+                                            placeholder="Enter your note"
+                                            className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:border-blue-500 focus:shadow-[0_0_10px_rgba(59,130,246,0.5)] focus:outline-none transition-all duration-300"
+                                            rows="5"
+                                            value={noteSelected?.name || ""}
+                                            onChange={(e) => {
+                                                setNoteSelected({ ...noteSelected, name: e.target.value })
+                                            }}
+                                        ></textarea>
+
+                                        {noteUpdateError && (
+                                            <p className="text-red-500 text-sm text-left mt-3">{noteUpdateError}</p>
+                                        )}
+
+                                        <div className="flex justify-end items-center gap-5 mt-5">
+
+                                            {noteUpdateLoading && (
+
+                                                <div className="animate-spin rounded-full h-5 w-5 border-3 border-blue-300 border-solid border-t-transparent"></div>
+
+                                            )}
+
+                                            <ButtonA type="submit">{noteUpdateLoading ? "Updating..." : "Update Note"}</ButtonA>
+
+                                        </div>
+
+                                        <div className="flex mt-5">
+                                            <ButtonB onClick={handleDeleteNote} className="w-full">
+                                                {removingNote ? "Removing..." : "Remove Note"}
+                                            </ButtonB>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence >
+                </div >
 
             </main >
 

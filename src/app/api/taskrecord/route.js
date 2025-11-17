@@ -93,7 +93,9 @@ export async function GET(req) {
 
                 const currentDay = getWeekday(tempDate);
 
-                if (targetDate === tempDate || currentDay == targetDay) {
+                console.log(currentDay);
+
+                if (targetDate.getTime() === tempDate.getTime() || currentDay == targetDay) {
 
                     specialRecords.push({
                         name: task.name,
