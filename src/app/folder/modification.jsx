@@ -45,7 +45,6 @@ export default function ModificationPage() {
     const [noteUpdateLoading, setNoteUpdateLoading] = useState(false);
     const [removingNote, setRemovingNote] = useState(false);
 
-
     {/* Effect: make sure first effect is show before 4.5 seconds */ }
     useEffect(() => {
         const timer = setTimeout(() => setHasEntered(true), 4500);

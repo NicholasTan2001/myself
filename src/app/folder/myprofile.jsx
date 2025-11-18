@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 
 export default function MyProfilePage() {
     const [loading, setLoading] = useState(true);
-    const [userData, setUserData] = useState({ name: "", email: "", password: "", confirmPassword: "", deletePassword: "" });
+    const [userData, setUserData] = useState({ id: "", name: "", email: "", password: "", confirmPassword: "", deletePassword: "" });
     const [errors, setErrors] = useState({});
     const [message, setMessage] = useState("");
     const [submitting, setSubmitting] = useState(false);
@@ -34,7 +34,7 @@ export default function MyProfilePage() {
             try {
                 const res = await fetch("/api/myprofile");
                 const data = await res.json();
-                if (data.user) setUserData({ ...userData, name: data.user.name, email: data.user.email });
+                if (data.user) setUserData({ ...userData, id: data.user.id, name: data.user.name, email: data.user.email });
                 else setMessage(data.error);
             } catch {
                 setMessage("Error fetching user data");
@@ -150,10 +150,19 @@ export default function MyProfilePage() {
                     transition={{ duration: 1, ease: "easeOut" }}
                 >
                     <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-full lg:w-[70%]">
-                        <h1 className="font-semibold text-md lg:text-lg mb-5">My Personal Information</h1>
+                        <div className="flex flex-row justify-between ">
+                            <h1 className="font-semibold text-md lg:text-lg">My Personal Information</h1>
+
+                            <p className=" text-gray-400 text-md lg:text-lg font-semibold">Friend's ID: {userData.id}</p>
+                        </div>
+
+                        <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
+                            * A Little About Me
+                        </h1>
 
                         <form className="space-y-4" onSubmit={handleUpdate}>
                             <div className="text-sm lg:text-base">
+
                                 <FormInput
                                     label="Name"
                                     type="text"
@@ -257,7 +266,7 @@ export default function MyProfilePage() {
                     </div>
                 </motion.div >
 
-            </main>
+            </main >
 
             <footer><Footer /></footer>
 

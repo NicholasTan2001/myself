@@ -11,8 +11,6 @@ export async function POST(request) {
         const malaysiaOffset = 8 * 60;
         const malaysiaDate = new Date(now.getTime() + malaysiaOffset * 60 * 1000);
 
-        console.log(malaysiaDate);
-
         {/* Data from .jsx file */ }
         const body = await request.json();
         const { name, email, password, confirmPassword } = body;

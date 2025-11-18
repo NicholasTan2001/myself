@@ -47,7 +47,7 @@ export default function DashboardPage() {
                 console.error("*Error fetching tasks:", err);
             }
         };
-        const timer = setTimeout(fetchAndResetTasks, 2900);
+        const timer = setTimeout(fetchAndResetTasks, 2850);
         return () => clearTimeout(timer);
     }, []);
 
@@ -111,7 +111,7 @@ export default function DashboardPage() {
                 console.error("*Error fetching tasks:", err);
             }
         };
-        const timer = setTimeout(fetchNoteData, 2900);
+        const timer = setTimeout(fetchNoteData, 3000);
         return () => clearTimeout(timer);
     }, []);
 

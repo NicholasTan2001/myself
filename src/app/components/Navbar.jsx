@@ -86,6 +86,11 @@ export default function Navbar() {
                             <span className={innerTextClass}>Report</span>
                         </Link>
 
+                        <Link href="/auth/friends" className={linkClass("/auth/friends")}>
+                            <span className={rippleSpan}></span>
+                            <span className={innerTextClass}>Friends</span>
+                        </Link>
+
                         <Link href="/auth/myprofile" className={linkClass("/auth/myprofile")}>
                             <span className={rippleSpan}></span>
                             <span className={innerTextClass}>My Profile</span>
@@ -150,6 +155,15 @@ export default function Navbar() {
                 >
                     <span className={rippleSpan}></span>
                     <span className={innerTextClass}>Report</span>
+                </Link>
+
+                <Link
+                    href="/auth/friends"
+                    onClick={() => setMenuOpen(false)}
+                    className={linkClass("/auth/freinds")}
+                >
+                    <span className={rippleSpan}></span>
+                    <span className={innerTextClass}>Friends</span>
                 </Link>
 
                 <Link
