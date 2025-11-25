@@ -254,7 +254,7 @@ export default function FriendsPage() {
                             exit={{ opacity: 0, y: -50 }}
                             transition={{ duration: 1, ease: "easeInOut" }}
                         >
-                            <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 w-full lg:w-[70%] mb-100">
+                            <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 w-full lg:w-[70%]">
                                 <h1 className="font-semibold text-md lg:text-lg"> Friend Search Result </h1>
                                 <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
                                     * A friend found based on the search
@@ -293,14 +293,14 @@ export default function FriendsPage() {
                                             </div>
                                         </div>
 
-                                        <div className="flex justify-end mt-5 items-center gap-5">
+                                        <div className="flex justify-end mt-3 items-center">
                                             {relation.length > 0 && relation.find(r => r.friendId === userData.id) ? (
                                                 <div className="flex flex-row items-center gap-5">
                                                     {loadingDeleteFriend && (
                                                         <div className="animate-spin rounded-full h-5 w-5 border-3 border-red-300 border-solid border-t-transparent"></div>
                                                     )}
                                                     <ButtonB onClick={handleDeleteFriend}>
-                                                        {loadingDeleteFriend ? "Deleting..." : "Delete"}
+                                                        {loadingDeleteFriend ? "Deleting..." : "Delete Friend"}
                                                     </ButtonB>
                                                 </div>
                                             ) : (
@@ -336,6 +336,8 @@ export default function FriendsPage() {
                         </motion.div>
                     </AnimatePresence >
                 }
+
+                <div className="flex mt-100"> hi </div>
 
             </main >
 
