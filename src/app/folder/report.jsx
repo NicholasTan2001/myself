@@ -270,7 +270,7 @@ export default function ReportPage() {
                                 initial={{ opacity: 0, y: -70 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -70 }}
-                                transition={{ duration: 1, ease: "easeOut" }}
+                                transition={{ duration: 0.8, ease: "easeInOut" }}
                             >
                                 <h1 className="font-semibold text-md lg:text-lg">History Table - Daily To-Do List</h1>
                                 <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
@@ -280,10 +280,10 @@ export default function ReportPage() {
                                 <table className="table-fixed w-full border-collapse shadow-sm rounded-md overflow-hidden mb-3">
                                     <thead>
                                         <tr className="bg-blue-300 text-white text-left text-sm lg:text-base">
-                                            <th className="px-4 py-2">Date</th>
-                                            <th className="px-4 py-2">Name</th>
-                                            <th className="px-4 py-2">Remark</th>
-                                            <th className="px-4 py-2">Checklist</th>
+                                            <th className="px-4 py-2 break-words">Date</th>
+                                            <th className="px-4 py-2 break-words">Name</th>
+                                            <th className="px-4 py-2 break-words">Remark</th>
+                                            <th className="px-4 py-2 break-words">Checklist</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -297,12 +297,12 @@ export default function ReportPage() {
                                                             : "bg-gray-200 text-black"
                                                     }
                                                 >
-                                                    <td className="px-4 py-2 text-sm lg:text-base">
+                                                    <td className="px-4 py-2 text-sm lg:text-base break-words">
                                                         {new Date(record.date).toLocaleDateString()}
                                                     </td>
-                                                    <td className="px-4 py-2 text-sm lg:text-base">{record.name}</td>
-                                                    <td className="px-4 py-2 text-sm lg:text-base">{record.remark}</td>
-                                                    <td className="px-4 py-2 text-sm lg:text-base">
+                                                    <td className="px-4 py-2 text-sm lg:text-base break-words">{record.name}</td>
+                                                    <td className="px-4 py-2 text-sm lg:text-base break-words">{record.remark}</td>
+                                                    <td className="px-4 py-2 text-sm lg:text-base break-words">
                                                         {record.check === "true" ? "DONE" : "NOT DONE"}
                                                     </td>
                                                 </tr>
@@ -325,7 +325,7 @@ export default function ReportPage() {
                                 initial={{ opacity: 0, y: -70 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -70 }}
-                                transition={{ duration: 1, ease: "easeOut" }}
+                                transition={{ duration: 0.8, ease: "easeInOut" }}
                             >
                                 <h1 className="font-semibold text-md lg:text-lg">History Table - Special To-Do List</h1>
                                 <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
@@ -335,10 +335,10 @@ export default function ReportPage() {
                                 <table className="table-fixed w-full border-collapse shadow-sm rounded-md overflow-hidden mb-3">
                                     <thead>
                                         <tr className="bg-blue-300 text-white text-left text-sm lg:text-base">
-                                            <th className="px-4 py-2">Date</th>
-                                            <th className="px-4 py-2">Name</th>
-                                            <th className="px-4 py-2">Remark</th>
-                                            <th className="px-4 py-2">Checklist</th>
+                                            <th className="px-4 py-2 break-words">Date</th>
+                                            <th className="px-4 py-2 break-words">Name</th>
+                                            <th className="px-4 py-2 break-words">Remark</th>
+                                            <th className="px-4 py-2 break-words">Checklist</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -352,12 +352,12 @@ export default function ReportPage() {
                                                             : "bg-gray-200 text-black"
                                                     }
                                                 >
-                                                    <td className="px-4 py-2 text-sm lg:text-base">
+                                                    <td className="px-4 py-2 text-sm lg:text-base break-words">
                                                         {new Date(record.date).toLocaleDateString()}
                                                     </td>
-                                                    <td className="px-4 py-2 text-sm lg:text-base">{record.name}</td>
-                                                    <td className="px-4 py-2 text-sm lg:text-base">{record.remark}</td>
-                                                    <td className="px-4 py-2 text-sm lg:text-base">
+                                                    <td className="px-4 py-2 text-sm lg:text-base break-words">{record.name}</td>
+                                                    <td className="px-4 py-2 text-sm lg:text-base break-words">{record.remark}</td>
+                                                    <td className="px-4 py-2 text-sm lg:text-base break-words">
                                                         {record.check === "true" ? "TRUE" : "FALSE"}
                                                     </td>
                                                 </tr>

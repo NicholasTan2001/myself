@@ -55,10 +55,27 @@ export async function GET(req) {
         {/* get data from Relation */ }
         const relation = await prisma.relation.findMany({
             where: { userId: decoded.userId },
-            select: { id: true, type: true, friendId: true },
+            select: {
+                id: true,
+                type: true,
+                friendId: true
+            },
         });
 
-        return NextResponse.json({ relation });
+        {/* get data from User */ }
+        const users = await prisma.user.findMany({
+            select: {
+                id: true,
+                email: true,
+                name: true,
+            },
+        });
+
+        return NextResponse.json({
+            relation,
+            users,
+        });
+
     } catch (error) {
         console.error("*Error fetching tasks:", error);
         return NextResponse.json({ error: "*Invalid or expired token" }, { status: 401 });

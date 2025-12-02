@@ -26,7 +26,8 @@ export default function FriendsPage() {
     const [loadingSearch, setLoadingSearch] = useState(false);
     const [relation, setRelation] = useState("");
     const [loadingDeleteFriend, setLoadingDeleteFriend] = useState("");
-
+    const [allUserData, setAllUserData] = useState([]);
+    const [searchKey, setSearchKey] = useState(0);
 
     {/* Effect: loading in 3 seconds */ }
     useEffect(() => {
@@ -63,6 +64,8 @@ export default function FriendsPage() {
 
                 if (!data.error) {
                     setRelation(data.relation);
+                    setAllUserData(data.users);
+
                 }
 
             } catch (err) {
@@ -112,6 +115,8 @@ export default function FriendsPage() {
             const data = await res.json();
             setUserData(data);
             setSearchResult(true);
+
+            setSearchKey(prev => prev + 1);
 
         } catch (err) {
             console.error(err);
@@ -182,6 +187,18 @@ export default function FriendsPage() {
         }
     };
 
+    {/* Function: get friend name */ }
+    function getUserName(id) {
+        const user = allUserData.find(u => u.id === id);
+        return user ? user.name : "Unknown";
+    }
+
+    {/* Function: get friend email */ }
+    function getUserEmail(id) {
+        const user = allUserData.find(u => u.id === id);
+        return user ? user.email : "Unknown";
+    }
+
     return (
         <>
             <header><Navbar /></header>
@@ -247,14 +264,14 @@ export default function FriendsPage() {
                 {searchResult &&
                     <AnimatePresence mode="wait">
                         <motion.div
-                            key={userData && Object.keys(userData).length > 0 ? userData.id : "not-found"}
+                            key={searchKey}
                             className="flex justify-center mt-10 px-10"
-                            initial={{ opacity: 0, y: -50 }}
+                            initial={{ opacity: 0, y: -70 }}
                             animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -50 }}
+                            exit={{ opacity: 0, y: -70 }}
                             transition={{ duration: 1, ease: "easeInOut" }}
                         >
-                            <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 w-full lg:w-[70%]">
+                            <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 w-full lg:w-[50%]">
                                 <h1 className="font-semibold text-md lg:text-lg"> Friend Search Result </h1>
                                 <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
                                     * A friend found based on the search
@@ -337,7 +354,56 @@ export default function FriendsPage() {
                     </AnimatePresence >
                 }
 
-                <div className="flex mt-100"> hi </div>
+                {/* Friends List */}
+                <motion.div
+                    className="flex justify-center items-center mt-10 mb-20 px-10"
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                >
+                    <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 w-full lg:w-[70%]">
+                        <h1 className="font-semibold text-md lg:text-lg"> Friends List </h1>
+                        <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
+                            * A list showing the user’s friends
+                        </h1>
+
+                        <table className="table-fixed w-full border-collapse shadow-sm rounded-md overflow-hidden mb-3 ">
+                            <thead>
+                                <tr className="bg-blue-300 text-white text-left text-sm lg:text-base">
+                                    <th className="px-4 py-2 break-words">ID</th>
+                                    <th className="px-4 py-2 break-words">Name</th>
+                                    <th className="px-4 py-2 break-words">Email</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {relation && relation.length > 0 ? (
+                                    relation.map((r, index) => (
+                                        <tr key={r.id}
+                                            className={
+                                                index % 2 === 0
+                                                    ? "bg-white text-black text-sm lg:text-base"
+                                                    : "bg-gray-200 text-black text-sm lg:text-base"
+                                            }>
+                                            <td className="px-4 py-2 break-words">{r.friendId}</td>
+                                            <td className="px-4 py-2 break-words">{getUserName(r.friendId)}</td>
+                                            <td className="px-4 py-2 break-words">{getUserEmail(r.friendId)}</td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td
+                                            colSpan="3"
+                                            className="text-center text-gray-400 py-3 text-sm lg:text-base"
+                                        >
+                                            No friend found ...
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </motion.div >
 
             </main >
 
