@@ -83,8 +83,6 @@ export default function FriendsPage() {
     const handleSubmitID = async (e) => {
         e.preventDefault();
 
-        setLoadingSearch(true);
-
         if (!userID) {
 
             setUserError("* Friend's ID is required");
@@ -102,6 +100,8 @@ export default function FriendsPage() {
             setUserError("* Friend's ID is yours");
             return;
         }
+
+        setLoadingSearch(true);
 
         try {
             const res = await fetch("/api/user", {
@@ -231,7 +231,7 @@ export default function FriendsPage() {
                     <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 w-full lg:w-[70%]">
                         <h1 className="font-semibold text-md lg:text-lg"> Find Friends </h1>
                         <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
-                            * Connect with genuine friends
+                            * Connect with genuine friends.
                         </h1>
                         <form onSubmit={handleSubmitID}>
                             <div className="flex flex-col">
@@ -274,7 +274,7 @@ export default function FriendsPage() {
                             <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 w-full lg:w-[50%]">
                                 <h1 className="font-semibold text-md lg:text-lg"> Friend Search Result </h1>
                                 <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
-                                    * A friend found based on the search
+                                    * A friend found based on the search.
                                 </h1>
 
                                 {userData && userData.id ? (
@@ -364,7 +364,7 @@ export default function FriendsPage() {
                     <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 w-full lg:w-[70%]">
                         <h1 className="font-semibold text-md lg:text-lg"> Friends List </h1>
                         <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
-                            * A list showing the user’s friends
+                            * A list showing the user’s friends.
                         </h1>
 
                         <table className="table-fixed w-full border-collapse shadow-sm rounded-md overflow-hidden mb-3 ">

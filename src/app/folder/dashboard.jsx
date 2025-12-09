@@ -19,6 +19,8 @@ export default function DashboardPage() {
     const [specialTodos, setSpecialTodos] = useState([]);
     const [noteData, setNoteData] = useState([]);
     const [expandedNotes, setExpandedNotes] = useState({});
+    const [friendNoteData, setFriendNoteData] = useState([]);
+    const [userData, setUserData] = useState([]);
 
     {/* Function: check item is checked or not */ }
     const totalChecked = Object.values(checkedItems).filter(Boolean).length;
@@ -115,6 +117,26 @@ export default function DashboardPage() {
         return () => clearTimeout(timer);
     }, []);
 
+
+    {/* Effect: get fetch to friend note api */ }
+    useEffect(() => {
+        const fetchFriendNoteData = async () => {
+            try {
+                const res = await fetch("/api/friendnote");
+                const data = await res.json();
+
+                if (!data.error) {
+                    setFriendNoteData(data.friendNoteData);
+                    setUserData(data.users);
+                }
+            } catch (err) {
+                console.error("*Error fetching tasks:", err);
+            }
+        };
+        const timer = setTimeout(fetchFriendNoteData, 3000);
+        return () => clearTimeout(timer);
+    }, []);
+
     {/* Function: loading page */ }
     if (loading) return <Loading />;
 
@@ -188,6 +210,12 @@ export default function DashboardPage() {
             </>
         );
     };
+
+    {/* Function: get friend name */ }
+    function getUserName(id) {
+        const user = userData.find(u => u.id === id);
+        return user ? user.name : "Unknown";
+    }
 
     return (
         <>
@@ -297,7 +325,7 @@ export default function DashboardPage() {
                     >
                         <h1 className="font-semibold text-md lg:text-lg">Special To-Do List</h1>
                         <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
-                            *Special tasks that are assigned to certain days.
+                            * Special tasks that are assigned to certain days.
                         </h1>
                         <ul className="space-y-3">
                             {sortedSpecialTodos.length > 0 ? (
@@ -377,7 +405,7 @@ export default function DashboardPage() {
 
                 {/* Reminder Note */}
                 <motion.div
-                    className="flex justify-center items-center mt-10"
+                    className="flex justify-center items-center mt-20"
                     initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, ease: "easeOut" }}
@@ -403,7 +431,7 @@ export default function DashboardPage() {
 
                             <h1 className="font-semibold text-md lg:text-lg">Note List</h1>
                             <h1 className="font-semibold text-md lg:text-lg text-gray-500">
-                                *Note that need to remind in lifestyle.
+                                * Note that need to remind in lifestyle.
                             </h1>
 
                             <div className="flex flex-col">
@@ -461,9 +489,111 @@ export default function DashboardPage() {
                     </motion.div >
                 </div >
 
+
+                {/* Friends Note */}
+                <motion.div
+                    className="flex justify-center items-center mt-10"
+                    initial={{ opacity: 0, y: 50 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    viewport={{ once: true, amount: 0.1 }}
+
+                >
+                    <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-center w-[70%] lg:w-[50%]">
+                        <FontA>
+                            <h1 className="text-xl lg:text-2xl">👥 Share Note</h1>
+                        </FontA>
+                    </div>
+                </motion.div>
+
+
+                {/* Friends Note List */}
+                < div className="flex justify-center px-10 mt-10 lg:px-20" >
+                    <motion.div
+                        className="mb-10 w-full lg:w-[80%] max-w-[1600px]"
+                        initial={{ opacity: 0, y: 50 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1, ease: "easeOut" }}
+                        viewport={{ once: true, amount: 0.1 }}
+                    >
+                        <div className="flex flex-col bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 lg:px-10">
+
+                            <h1 className="font-semibold text-md lg:text-lg">Friend's Note</h1>
+                            <h1 className="font-semibold text-md lg:text-lg text-gray-500">
+                                * Note that share with a friend.
+                            </h1>
+
+                            <div className="flex flex-col">
+                                {friendNoteData.length > 0 ? (
+                                    friendNoteData
+                                        .sort((a, b) => {
+                                            if (a.type == "Important" && b.type != "Important") return -1;
+                                            if (a.type != "Important" && b.type == "Important") return 1;
+                                            return 0;
+                                        })
+                                        .map((friendnote) => (
+                                            <div
+                                                key={friendnote.id}
+                                                onClick={() =>
+                                                    setExpandedNotes((prev) => ({
+                                                        ...prev,
+                                                        [friendnote.id]: !prev[friendnote.id],
+                                                    }))
+                                                }
+                                                className="group font-semibold text-sm lg:text-base rounded-lg mt-5 cursor-pointer hover:bg-blue-100 p-3 outline-none hover:shadow-[0_0_10px_rgba(191,219,254,1)] active:bg-blue-300"
+                                            >
+                                                <div className="flex flex-col lg:flex-row lg:justify-between">
+                                                    {friendnote.type == "Important" ? (
+                                                        <p className="text-red-300 group-active:text-white">• Important Note</p>
+                                                    ) : (
+                                                        <p className="text-blue-300 group-active:text-white">• Normal Note</p>
+                                                    )}
+
+                                                    <p className="text-black-300 group-active:text-white">Note by: {getUserName(friendnote.userId)}</p>
+
+                                                </div>
+
+                                                <p className="text-black group-active:text-white">
+
+                                                    Share Note with: {getUserName(friendnote.friendId)}
+
+                                                </p>
+
+                                                <p className="text-black group-active:text-white">
+                                                    Note:{" "}
+                                                    {expandedNotes[friendnote.id]
+                                                        ? friendnote.name
+                                                        : getShortText(friendnote.name)}
+                                                </p>
+                                            </div>
+
+                                        ))
+                                ) : (
+                                    <>
+                                        <div className="flex flex-col justify-center items-center">
+                                            <Image
+                                                src="/notask.png"
+                                                alt="No tasks"
+                                                width={120}
+                                                height={120}
+                                                className="opacity-80"
+                                            />
+                                            <p className="text-gray-400 text-sm lg:text-base font-semibold text-center">
+                                                No note available.
+                                            </p>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+
+                        </div>
+                    </motion.div>
+                </div >
+
+
                 {/* Daily Report */}
                 < motion.div
-                    className="flex justify-center items-center"
+                    className="flex justify-center items-center mt-10"
                     initial={{ opacity: 0, y: 50 }
                     }
                     whileInView={{ opacity: 1, y: 0 }}
@@ -494,7 +624,7 @@ export default function DashboardPage() {
                                         Daily To-Do List Chart
                                     </h2>
                                     <p className="font-semibold text-md lg:text-lg text-gray-500 mb-3 text-left">
-                                        *A chart displaying the daily tasks that have been completed.
+                                        * A chart displaying the daily tasks that have been completed.
                                     </p>
                                     <ChartDailyList todos={todos} checkedItems={checkedItems} />
                                 </div>
@@ -505,7 +635,7 @@ export default function DashboardPage() {
                                         Special To-Do List Chart
                                     </h2>
                                     <p className="font-semibold text-md lg:text-lg text-gray-500 mb-3 text-left">
-                                        *A chart displaying the special tasks that have been completed.
+                                        * A chart displaying the special tasks that have been completed.
                                     </p>
                                     <ChartSpecialList todos={specialTodos} checkedItems={specialChecked} />
                                 </div>

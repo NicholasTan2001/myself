@@ -55,6 +55,21 @@ export async function POST(req) {
             where: { userId: decoded.userId },
         });
 
+        {/* Delete Friend */ }
+        await prisma.friendNote.deleteMany({
+            where: { userId: decoded.userId },
+        });
+
+        {/* Delete Record */ }
+        await prisma.record.deleteMany({
+            where: { userId: decoded.userId },
+        });
+
+        {/* Delete Relation */ }
+        await prisma.relation.deleteMany({
+            where: { userId: decoded.userId },
+        });
+
         {/* Delete user */ }
         await prisma.user.delete({
             where: { id: decoded.userId },

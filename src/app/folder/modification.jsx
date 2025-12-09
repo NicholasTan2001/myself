@@ -11,6 +11,7 @@ import FormInput from "../components/FormInput";
 import FormDay from "../components/FormDay";
 import ButtonA from "../components/ButtonA";
 import ButtonB from "../components/ButtonB";
+import FormFriend from "../components/FormFriend";
 import FormImportant from "../components/FormImportant";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -44,6 +45,16 @@ export default function ModificationPage() {
     const [noteUpdateError, setNoteUpdateError] = useState([]);
     const [noteUpdateLoading, setNoteUpdateLoading] = useState(false);
     const [removingNote, setRemovingNote] = useState(false);
+    const [allUserData, setAllUserData] = useState([]);
+    const [relation, setRelation] = useState([]);
+    const [submittingFriendNote, setSubmittingFriendNote] = useState(null);
+    const [friendNoteData, setFriendNoteData] = useState({ name: "", type: "", friendId: "" });
+    const [friendNoteDataError, setFriendNoteDataError] = useState({ name: "", friendId: "" });
+    const [friendNoteShow, setFriendNoteShow] = useState([]);
+    const [friendNoteSelected, setFriendNoteSelected] = useState(null);
+    const [friendNoteUpdateError, setFriendNoteUpdateError] = useState("");
+    const [friendNoteUpdateLoading, setFriendNoteUpdateLoading] = useState(false);
+    const [removingFriendNote, setRemovingFriendNote] = useState(false);
 
     {/* Effect: make sure first effect is show before 4.5 seconds */ }
     useEffect(() => {
@@ -95,7 +106,6 @@ export default function ModificationPage() {
         return () => clearTimeout(timer);
     }, []);
 
-
     {/* Effect: get fetch to note api */ }
     useEffect(() => {
         const fetchNoteData = async () => {
@@ -111,6 +121,45 @@ export default function ModificationPage() {
             }
         };
         const timer = setTimeout(fetchNoteData, 2900);
+        return () => clearTimeout(timer);
+    }, []);
+
+    {/* Effect: get fetch to friend note api */ }
+    useEffect(() => {
+        const fetchFriendNoteData = async () => {
+            try {
+                const res = await fetch("/api/friendnoteupdate");
+                const data = await res.json();
+
+                if (!data.error) {
+                    setFriendNoteShow(data.friendNoteData);
+                }
+            } catch (err) {
+                console.error("*Error fetching tasks:", err);
+            }
+        };
+        const timer = setTimeout(fetchFriendNoteData, 2900);
+        return () => clearTimeout(timer);
+    }, []);
+
+    {/* Effect: get data from relation */ }
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const res = await fetch("/api/friend");
+                const data = await res.json();
+
+                if (!data.error) {
+                    setRelation(data.relation);
+                    setAllUserData(data.users);
+
+                }
+
+            } catch (err) {
+                console.error("*Error fetching tasks:", err);
+            }
+        };
+        const timer = setTimeout(fetchUser, 2900);
         return () => clearTimeout(timer);
     }, []);
 
@@ -224,7 +273,7 @@ export default function ModificationPage() {
 
             setUpdating(true);
 
-            window.location.reload();
+            router.push("/auth/dashboard");
         } catch (err) {
 
         }
@@ -245,7 +294,7 @@ export default function ModificationPage() {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Failed to delete task");
 
-            window.location.reload();
+            router.push("/auth/dashboard");
         } catch (err) {
 
         }
@@ -274,7 +323,7 @@ export default function ModificationPage() {
 
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Failed to update special task");
-            window.location.reload();
+            router.push("/auth/dashboard");
         } catch (err) {
 
         }
@@ -295,7 +344,7 @@ export default function ModificationPage() {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Failed to delete task");
 
-            window.location.reload();
+            router.push("/auth/dashboard");
         } catch (err) {
 
         }
@@ -359,7 +408,7 @@ export default function ModificationPage() {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Failed to update note");
 
-            window.location.reload();
+            router.push("/auth/dashboard");
         } catch (err) {
 
         } finally {
@@ -383,11 +432,117 @@ export default function ModificationPage() {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Failed to delete note");
 
-            window.location.reload();
+            router.push("/auth/dashboard");
         } catch (err) {
 
         }
     };
+
+    {/* Function: submit new friend note*/ }
+    const handleSubmitFriendNoteData = async (e) => {
+        e.preventDefault();
+        setFriendNoteDataError({});
+        setMessage("");
+
+        const errors = {};
+
+        if (!friendNoteData.friendId) {
+            errors.friendId = "*Friend's name is required";
+        }
+
+        if (!friendNoteData.name) {
+            errors.name = "*Note is required";
+        }
+
+        setFriendNoteDataError(errors);
+
+        if (friendNoteData.friendId || friendNoteData.name) return;
+
+        setSubmittingFriendNote(true);
+
+        try {
+
+            const res = await fetch("/api/friendnote", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(friendNoteData),
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "*Failed to add note");
+
+            setFriendNoteData({ type: "", name: "", friendId: "" });
+            router.push("/auth/dashboard");
+        } catch (err) {
+            setMessage(err.message);
+        } finally {
+            setSubmittingFriendNote(false);
+        }
+    };
+
+    {/* Function: update friend note */ }
+    const handleUpdateFriendNote = async (e) => {
+        e.preventDefault();
+
+        if (!friendNoteSelected.name) {
+            setFriendNoteUpdateError("*Friend's note is required");
+            return;
+        }
+
+        setFriendNoteUpdateLoading(true);
+
+        try {
+            const res = await fetch("/api/friendnoteupdate", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: friendNoteSelected.id,
+                    name: friendNoteSelected.name,
+                    type: friendNoteSelected.type,
+                    friendId: friendNoteSelected.friendId,
+                }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Failed to update note");
+
+            router.push("/auth/dashboard");
+        } catch (err) {
+
+        } finally {
+            setFriendNoteUpdateLoading(false);
+        }
+    };
+
+    {/* Function: delete friend note */ }
+    const handleDeleteFriendNote = async (e) => {
+        e.preventDefault();
+
+        setRemovingFriendNote(true);
+
+        try {
+            const res = await fetch("/api/friendnoteupdate", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: friendNoteSelected.id }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Failed to delete note");
+
+            router.push("/auth/dashboard");
+        } catch (err) {
+
+        } finally {
+            setRemovingFriendNote(false);
+        }
+    };
+
+    {/* Function: get friend name */ }
+    function getUserName(id) {
+        const user = allUserData.find(u => u.id === id);
+        return user ? user.name : "Unknown";
+    }
 
     return (
         <>
@@ -620,7 +775,7 @@ export default function ModificationPage() {
                                 <>
                                     <h1 className="font-semibold text-md lg:text-lg">Modification Daily To-Do List</h1>
                                     <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
-                                        *Modify your current daily task
+                                        * Modify your current daily task
                                     </h1>
 
                                     <div className="mt-5">
@@ -672,7 +827,7 @@ export default function ModificationPage() {
                                 <>
                                     <h1 className="font-semibold text-md lg:text-lg">Modification Special To-Do List</h1>
                                     <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
-                                        *Modify your current special task
+                                        * Modify your current special task
                                     </h1>
 
                                     <div className="mt-5">
@@ -749,22 +904,16 @@ export default function ModificationPage() {
                             <motion.div
                                 key={selectedTask2 ? "special-selected" : "daily-selected"}
                                 className="relative bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-full lg:w-[30%]"
-                                initial={{
-                                    opacity: 0,
-                                    x: -100,
-                                }}
+                                initial={{ opacity: 0, x: -100, }}
                                 animate={{ opacity: 1, x: 0 }}
-                                exit={{
-                                    opacity: 0,
-                                    x: -100,
-                                }}
+                                exit={{ opacity: 0, x: -100, }}
                                 transition={{ duration: 1, ease: "easeOut" }}
                             >
                                 {selectedTask && (
                                     <>
                                         <h1 className="font-semibold text-md lg:text-lg">Modification Daily Task Selected</h1>
                                         <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
-                                            *Modify your selected daily task
+                                            * Modify your selected daily task
                                         </h1>
 
                                         <form className="text-sm lg:text-base">
@@ -813,7 +962,7 @@ export default function ModificationPage() {
                                     <>
                                         <h1 className="font-semibold text-md lg:text-lg">Modification Special Task Selected</h1>
                                         <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
-                                            *Modify your selected special task
+                                            * Modify your selected special task
                                         </h1>
                                         <form className="text-sm lg:text-base">
                                             <FormInput
@@ -907,11 +1056,11 @@ export default function ModificationPage() {
                             <div className="px-5">
                                 <h1 className="font-semibold text-md lg:text-lg">New Note Request</h1>
                                 <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
-                                    *Add a new note
+                                    * Add a new note
                                 </h1>
 
                                 <form onSubmit={handleSubmitNoteData}>
-                                    <div className="w-full lg:w-[50%] lg:flex-3 text-sm lg:text-base">
+                                    <div className="w-full lg:w-[70%] lg:flex-3 text-sm lg:text-base">
                                         <FormImportant
                                             label="Importance"
                                             type="select"
@@ -972,7 +1121,7 @@ export default function ModificationPage() {
                             <div className="px-5">
                                 <h1 className="font-semibold text-md lg:text-lg">Modification Note</h1>
                                 <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
-                                    *Modify your current note
+                                    * Modify your current note
                                 </h1>
 
                                 {noteShow.length > 0 ? (
@@ -1033,12 +1182,12 @@ export default function ModificationPage() {
                                 initial={{ opacity: 0, x: -100 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -100 }}
-                                transition={{ duration: 1, ease: "easeIn" }}
+                                transition={{ duration: 1, ease: "easeOut" }}
                             >
                                 <div className="px-5">
                                     <h1 className="font-semibold text-md lg:text-lg">Modification Note Selected</h1>
                                     <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
-                                        *Modify your selected note
+                                        * Modify your selected note
                                     </h1>
 
                                     <form onSubmit={handleUpdateNote}>
@@ -1093,6 +1242,251 @@ export default function ModificationPage() {
                         )}
                     </AnimatePresence >
                 </div >
+
+                {/* New Friend Note Request Form */}
+                <div className="flex justify-center items-center px-10 mb-10">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            className="relative bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-5 py-5 text-left w-full lg:w-[70%]"
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1, ease: "easeOut" }}
+                            viewport={{ once: true, amount: 0.1 }}
+                        >
+                            <div className="px-5">
+                                <h1 className="font-semibold text-md lg:text-lg">New Friend's Note Request</h1>
+                                <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
+                                    * Add a new friend's note
+                                </h1>
+
+                                <form onSubmit={handleSubmitFriendNoteData}>
+
+                                    <div className="flex flex-row w-full gap-5 text-sm lg:text-base">
+                                        <FormImportant
+                                            label="Importance"
+                                            type="select"
+                                            name="type"
+                                            value={friendNoteData.type}
+                                            onChange={(e) => {
+                                                setFriendNoteData({ ...friendNoteData, type: e.target.value })
+                                            }}
+                                        />
+
+                                        <FormFriend
+                                            label="Friend's Name"
+                                            type="select"
+                                            name="friendId"
+                                            value={friendNoteData.friendId}
+                                            friendsList={relation.map(r => ({
+                                                id: r.friendId,
+                                                name: getUserName(r.friendId)
+                                            }))}
+                                            onChange={(e) => {
+                                                setFriendNoteData({ ...friendNoteData, friendId: Number(e.target.value) })
+                                                setFriendNoteDataError("");
+                                            }}
+                                        />
+                                    </div>
+
+                                    {friendNoteDataError.friendId && (
+                                        <p className="text-red-500 text-sm text-left mb-3">{friendNoteDataError.friendId}</p>
+                                    )}
+
+                                    <h1 className="font-semibold text-sm lg:text-base mb-5">What impressive note are you preparing to share with your friend ?</h1>
+                                    <textarea
+                                        label="note"
+                                        name="name"
+                                        placeholder="Enter your note"
+                                        className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:border-blue-500 focus:shadow-[0_0_10px_rgba(59,130,246,0.5)] focus:outline-none transition-all duration-300"
+                                        rows="5"
+                                        value={friendNoteData.name}
+                                        onChange={(e) => {
+                                            setFriendNoteData({ ...friendNoteData, name: e.target.value })
+                                            setFriendNoteDataError("");
+                                        }}
+                                    ></textarea>
+
+                                    {friendNoteDataError.name && (
+                                        <p className="text-red-500 text-sm text-left mt-3">{friendNoteDataError.name}</p>
+                                    )}
+
+                                    <div className="mt-5 flex justify-end items-center gap-5">
+
+                                        {submittingFriendNote && (
+
+                                            <div className="animate-spin rounded-full h-5 w-5 border-3 border-blue-300 border-solid border-t-transparent"></div>
+
+                                        )}
+                                        <ButtonA type="submit">{submittingFriendNote ? "Adding..." : "Add Note"}</ButtonA>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
+
+
+                <div className="flex flex-col lg:flex-row justify-center items-start px-10 mb-10 gap-10">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            className="relative bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-5 py-5 text-left w-full lg:w-[50%] "
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1, ease: "easeOut" }}
+                            viewport={{ once: true, amount: 0.1 }}
+                        >
+
+                            <div className="px-5">
+                                <h1 className="font-semibold text-md lg:text-lg">Modification Friend's Note</h1>
+                                <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
+                                    * Modify your current friend's note
+                                </h1>
+
+                                {friendNoteShow.length > 0 ? (
+                                    friendNoteShow
+                                        .sort((a, b) => {
+                                            if (a.type == "Important" && b.type != "Important") return -1;
+                                            if (a.type != "Important" && b.type == "Important") return 1;
+                                            return 0;
+                                        })
+                                        .map((note) => (
+                                            <div
+                                                key={note.id}
+                                                onClick={() => setFriendNoteSelected(note)}
+                                                className={`font-semibold group flex flex-col cursor-pointer mb-3 text-sm lg:text-base rounded-lg px-3 py-2 select-none 
+                                                            transition-all duration-300 ease-in-out
+                    ${friendNoteSelected?.id === note.id ? "bg-blue-300 text-white shadow-[0_0_10px_rgba(191,219,254,1)]" : "hover:bg-blue-100 hover:shadow-[0_0_10px_rgba(191,219,254,1)]"}`}
+                                            >
+                                                {note.type == "Important" ? (
+                                                    <p className={friendNoteSelected?.id === note.id ? "text-white" : "text-red-300"}>
+                                                        • Important
+                                                    </p>
+                                                ) : (
+                                                    <p className={friendNoteSelected?.id === note.id ? "text-white" : "text-blue-300"}>
+                                                        • Normal
+                                                    </p>
+                                                )}
+
+                                                <p className={friendNoteSelected?.id === note.id ? "text-white" : "text-black"}>
+                                                    Note: {note.name}
+                                                </p>
+                                            </div>
+                                        ))
+                                ) : (
+                                    <>
+                                        <div className="flex flex-col justify-center items-center">
+                                            <Image
+                                                src="/notask.png"
+                                                alt="No tasks"
+                                                width={120}
+                                                height={120}
+                                                className="opacity-80"
+                                            />
+                                            <p className="text-gray-400 text-sm lg:text-base font-semibold text-center">
+                                                No note available.
+                                            </p>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </motion.div>
+                    </AnimatePresence>
+
+                    <AnimatePresence mode="wait">
+                        {friendNoteSelected && (
+                            <motion.div
+                                key={friendNoteSelected}
+                                className="relative bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-5 py-5 text-left w-full lg:w-[30%]"
+                                initial={{ opacity: 0, x: -100 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -100 }}
+                                transition={{ duration: 1, ease: "easeOut" }}
+                            >
+                                <div className="px-5">
+                                    <h1 className="font-semibold text-md lg:text-lg">Modification Friend's Note Selected</h1>
+                                    <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
+                                        * Modify your selected friend's note
+                                    </h1>
+
+                                    <form onSubmit={handleUpdateFriendNote}>
+                                        <FormImportant
+                                            label="Importance"
+                                            type="select"
+                                            name="type"
+                                            value={friendNoteSelected?.type || ""}
+                                            onChange={(e) => {
+                                                setFriendNoteSelected({ ...friendNoteSelected, type: e.target.value })
+                                            }}
+                                        />
+
+                                        <FormFriend
+                                            label="Friend's Name"
+                                            type="select"
+                                            name="friendId"
+                                            value={friendNoteSelected?.friendId || ""}
+                                            friendsList={relation.map(r => ({
+                                                id: r.friendId,
+                                                name: getUserName(r.friendId)
+                                            }))}
+                                            onChange={(e) => {
+                                                setFriendNoteSelected({ ...friendNoteSelected, friendId: Number(e.target.value) })
+                                            }}
+                                        />
+
+                                        <h1 className="font-semibold text-sm lg:text-base mb-2">Modify your note here: </h1>
+                                        <textarea
+                                            label="note"
+                                            name="name"
+                                            placeholder="Enter your note"
+                                            className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:border-blue-500 focus:shadow-[0_0_10px_rgba(59,130,246,0.5)] focus:outline-none transition-all duration-300"
+                                            rows="5"
+                                            value={friendNoteSelected?.name || ""}
+                                            onChange={(e) => {
+                                                setFriendNoteSelected({ ...friendNoteSelected, name: e.target.value })
+
+                                                setFriendNoteUpdateError("");
+                                            }}
+                                        ></textarea>
+
+                                        {friendNoteUpdateError && (
+                                            <p className="text-red-500 text-sm text-left mt-3">{friendNoteUpdateError}</p>
+                                        )}
+
+                                        <div className="flex justify-end items-center gap-5 mt-5">
+
+                                            {friendNoteUpdateLoading && (
+
+                                                <div className="animate-spin rounded-full h-5 w-5 border-3 border-blue-300 border-solid border-t-transparent"></div>
+
+                                            )}
+
+                                            <ButtonA type="submit">{friendNoteUpdateLoading ? "Updating..." : "Update Note"}</ButtonA>
+
+                                        </div>
+
+                                        <div className="flex mt-5">
+                                            <ButtonB onClick={handleDeleteFriendNote} className="w-full">
+                                                {removingFriendNote ? "Removing..." : "Remove Note"}
+                                            </ButtonB>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence >
+                </div>
+
+
+
+
+
+
+
+
+
+
 
             </main >
 

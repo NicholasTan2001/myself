@@ -27,7 +27,7 @@ model User {
   records Record[]
   note Note[]
   relation Relation[]
-
+  friendNote FriendNote[]
 }
 
 model DailyList {
@@ -80,6 +80,17 @@ model Note {
 
 model Relation {
   id        Int      @id @default(autoincrement())
+  friendId  Int
+  type      String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime 
+  updatedAt DateTime 
+}
+
+model FriendNote {
+  id        Int      @id @default(autoincrement())
+  name      String
   friendId  Int
   type      String
   userId    Int
