@@ -95,7 +95,7 @@ export default function DashboardPage() {
             }
         };
 
-        const timer = setTimeout(fetchTasks, 3000);
+        const timer = setTimeout(fetchTasks, 5000);
         return () => clearTimeout(timer);
     }, []);
 

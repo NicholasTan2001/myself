@@ -356,7 +356,7 @@ export default function FriendsPage() {
 
                 {/* Friends List */}
                 <motion.div
-                    className="flex justify-center items-center mt-10 mb-20 px-10"
+                    className="flex justify-center items-center mt-10 mb-30 px-10"
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, ease: "easeOut" }}
