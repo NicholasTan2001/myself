@@ -28,6 +28,7 @@ model User {
   note Note[]
   relation Relation[]
   friendNote FriendNote[]
+  verification Verification[]
 }
 
 model DailyList {
@@ -93,6 +94,16 @@ model FriendNote {
   name      String
   friendId  Int
   type      String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime 
+  updatedAt DateTime 
+}
+
+model Verification {
+  id        Int      @id @default(autoincrement())
+  active    String
+  code      Int
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime 

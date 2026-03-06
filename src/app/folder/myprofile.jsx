@@ -9,6 +9,7 @@ import FontA from "../components/FontA";
 import ButtonA from "../components/ButtonA";
 import ButtonB from "../components/ButtonB";
 import FormInput from "../components/FormInput";
+import Switch from "../components/Switch";
 import { useRouter } from "next/navigation";
 
 export default function MyProfilePage() {
@@ -20,6 +21,8 @@ export default function MyProfilePage() {
     const [deletePassword, setDeletePassword] = useState("");
     const [deleteError, setDeleteError] = useState("");
     const [deleteLoading, setDeleteLoading] = useState(false);
+    const [switchVerify, setSwitchVerify] = useState(false);
+    const [switchLoading, setSwitchLoading] = useState(false);
     const router = useRouter();
 
     {/* Effect: loading in 3 seconds */ }
@@ -41,6 +44,24 @@ export default function MyProfilePage() {
             }
         };
         fetchData();
+    }, []);
+
+    {/* Effect: get data from my switchverify api */ }
+    useEffect(() => {
+        const fetchSwitchVerifyData = async () => {
+            try {
+                const res = await fetch("/api/switchverify");
+                const data = await res.json();
+                if (res.ok) setSwitchVerify(data.active);
+                if (data.code != 0) {
+                    router.push('/auth/verification');
+                    return;
+                }
+            } catch (error) {
+                console.error("Error fetching switch status");
+            }
+        };
+        fetchSwitchVerifyData();
     }, []);
 
     {/* Function: set data in UserData */ }
@@ -117,6 +138,29 @@ export default function MyProfilePage() {
         }
     };
 
+    {/* Function: handle switch toggle */ }
+    const handleToggle = async (newValue) => {
+        setSwitchLoading(true);
+        const previousValue = switchVerify;
+        setSwitchVerify(newValue);
+
+        try {
+            const res = await fetch("/api/switchverify", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ active: newValue }),
+            });
+            const data = await res.json();
+
+            if (!res.ok) throw new Error();
+            setSwitchVerify(data.active);
+        } catch (error) {
+            setMessage("Failed to update security setting.");
+            setSwitchVerify(previousValue);
+        } finally {
+            setSwitchLoading(false);
+        }
+    };
     {/* Function: loading page */ }
     if (loading) return <Loading />;
 
@@ -221,6 +265,55 @@ export default function MyProfilePage() {
                         </form>
                     </div>
                 </motion.div >
+
+                {/* Account Second Verification */}
+                < motion.div
+                    className="flex justify-center items-center mt-10 px-10"
+                    initial={{ opacity: 0, y: 50 }
+                    }
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    viewport={{ once: true, amount: 0.1 }}
+                >
+                    <div className="bg-white text-black shadow-[0_0_25px_rgba(255,255,255,0.8)] rounded-2xl px-10 py-5 text-left w-full lg:w-[70%]">
+                        <h1 className="font-semibold text-md lg:text-lg text-black">Account Second Verification</h1>
+                        <h1 className="font-semibold text-md lg:text-lg text-gray-500 mb-5">
+                            * Verify your account second time when logging in
+                        </h1>
+
+                        <div className="flex flex-row gap-10">
+
+                            <div className="flex font-semibold text-sm lg:text-base mb-5">
+                                The second verification step uses a one-time password (OTP) to
+                                enhance account security during login. The OTP will be sent to your
+                                email within a minute and is valid for only one minute. Please make
+                                sure to complete the login within this timeframe.
+                            </div>
+
+                            <div className="flex justify-center">
+                                <Switch
+                                    isOn={switchVerify}
+                                    onToggle={handleToggle}
+                                    disabled={switchLoading}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </motion.div >
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 {/* Account Deletion */}
                 < motion.div

@@ -45,8 +45,27 @@ export default function LoginPage() {
             });
 
             if (res.ok) {
-                router.push('/auth/dashboard');
-                return;
+                try {
+                    const res = await fetch("/api/switchverify");
+                    const data = await res.json();
+                    if (res.ok && data.active == true) {
+
+                        await fetch("/api/otpupdate", {
+                            method: "PATCH"
+                        });
+
+                        router.push('/auth/verification');
+                        return;
+
+                    } else {
+
+                        router.push('/auth/dashboard');
+                        return;
+
+                    }
+                } catch (error) {
+                    console.error("Error fetching switch status");
+                }
             }
 
             if (res.status === 401) {
@@ -101,7 +120,7 @@ export default function LoginPage() {
                             placeholder="Enter your email"
                             onChange={(e) => { setEmailError(''); handleChange(e); }}
                         />
-                        {emailError && <p className="text-sm text-red-600 text-center">{emailError}</p>}
+                        {emailError && <p className="text-sm text-red-500 text-center">{emailError}</p>}
                     </div>
 
                     <div className="w-full text-sm lg:text-base">
@@ -112,7 +131,7 @@ export default function LoginPage() {
                             placeholder="Enter your password"
                             onChange={(e) => { setPasswordError(''); handleChange(e); }}
                         />
-                        {passwordError && <p className="text-sm text-red-600 text-center">{passwordError}</p>}
+                        {passwordError && <p className="text-sm text-red-500 text-center">{passwordError}</p>}
                     </div>
                     <ButtonA type="submit" className="mt-5 w-full" disabled={submitting} >
                         {submitting ? "Logging..." : "Login"}

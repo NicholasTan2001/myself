@@ -10,6 +10,7 @@ import FontA from "../components/FontA";
 import ChartDailyList from "../components/ChartDailyList";
 import ChartSpecialList from "../components/ChartSpecialList";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
     const [loading, setLoading] = useState(true);
@@ -21,6 +22,7 @@ export default function DashboardPage() {
     const [expandedNotes, setExpandedNotes] = useState({});
     const [friendNoteData, setFriendNoteData] = useState([]);
     const [userData, setUserData] = useState([]);
+    const router = useRouter();
 
     {/* Function: check item is checked or not */ }
     const totalChecked = Object.values(checkedItems).filter(Boolean).length;
@@ -34,6 +36,25 @@ export default function DashboardPage() {
         month: "long",
         day: "numeric",
     });
+
+    {/* Effect: get data from my switchverify api */ }
+    useEffect(() => {
+        const fetchSwitchVerifyData = async () => {
+            try {
+                const res = await fetch("/api/switchverify");
+                const data = await res.json();
+                if (res.ok) {
+                    if (data.code != 0) {
+                        router.push('/auth/verification');
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.error("Error fetching switch status");
+            }
+        };
+        fetchSwitchVerifyData();
+    }, []);
 
     {/* Effect: get fetch to taskrecord api */ }
     useEffect(() => {

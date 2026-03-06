@@ -36,6 +36,25 @@ export default function FriendsPage() {
         return () => clearTimeout(timer);
     }, []);
 
+    {/* Effect: get data from my switchverify api */ }
+    useEffect(() => {
+        const fetchSwitchVerifyData = async () => {
+            try {
+                const res = await fetch("/api/switchverify");
+                const data = await res.json();
+                if (res.ok) {
+                    if (data.code != 0) {
+                        router.push('/auth/verification');
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.error("Error fetching switch status");
+            }
+        };
+        fetchSwitchVerifyData();
+    }, []);
+
     {/* Effect: get  data user */ }
     useEffect(() => {
         const fetchUser = async () => {

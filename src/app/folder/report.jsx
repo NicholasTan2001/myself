@@ -12,6 +12,7 @@ import FormList from "../components/FormList";
 import ChartDailyFre from "../components/ChartDailyFre";
 import ChartSpecialFre from "../components/ChartSpecialFre";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function ReportPage() {
     const [loading, setLoading] = useState(true);
@@ -35,6 +36,7 @@ export default function ReportPage() {
     const [tempFreqFrom2, setTempFreqFrom2] = useState("");
     const [tempFreqTo2, setTempFreqTo2] = useState("");
     const [specialFreError, setSpecialFreError] = useState("");
+    const router = useRouter();
 
     {/* Function: create current Malaysia date */ }
     const now = new Date();
@@ -68,6 +70,25 @@ export default function ReportPage() {
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 3000);
         return () => clearTimeout(timer);
+    }, []);
+
+    {/* Effect: get data from my switchverify api */ }
+    useEffect(() => {
+        const fetchSwitchVerifyData = async () => {
+            try {
+                const res = await fetch("/api/switchverify");
+                const data = await res.json();
+                if (res.ok) {
+                    if (data.code != 0) {
+                        router.push('/auth/verification');
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.error("Error fetching switch status");
+            }
+        };
+        fetchSwitchVerifyData();
     }, []);
 
     if (loading) return <Loading />;

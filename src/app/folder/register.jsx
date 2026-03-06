@@ -115,7 +115,7 @@ export default function RegisterPage() {
                             onChange={(e) => { setNameError(''); handleChange(e); }}
                         />
                         {nameError && (
-                            <p className="text-sm text-red-600 text-center">{nameError}</p>
+                            <p className="text-sm text-red-500 text-center">{nameError}</p>
                         )}
                     </div>
                     <div className="w-full mb-4 text-sm lg:text-base">
@@ -127,7 +127,7 @@ export default function RegisterPage() {
                             onChange={(e) => { setEmailError(''); handleChange(e); }}
                         />
                         {emailError && (
-                            <p className="text-sm text-red-600 text-center">{emailError}</p>
+                            <p className="text-sm text-red-500 text-center">{emailError}</p>
                         )}
                     </div>
                     <div className="w-full mb-4 text-sm lg:text-base">
@@ -139,7 +139,7 @@ export default function RegisterPage() {
                             onChange={(e) => { setPasswordError(''); handleChange(e); }}
                         />
                         {passwordError && (
-                            <p className="text-sm text-red-600 text-center">{passwordError}</p>
+                            <p className="text-sm text-red-500 text-center">{passwordError}</p>
                         )}
                     </div>
 
@@ -152,7 +152,7 @@ export default function RegisterPage() {
                             onChange={(e) => { setConfirmError(''); handleChange(e); }}
                         />
                         {confirmError && (
-                            <p className="text-sm text-red-600 text-center">{confirmError}</p>
+                            <p className="text-sm text-red-500 text-center">{confirmError}</p>
                         )}
                     </div>
 
