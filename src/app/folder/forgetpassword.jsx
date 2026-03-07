@@ -63,7 +63,7 @@ For security, each time you request a new temporary password via the "Forget Pas
 
 Temporary Password: ${tempPassword}
 
-* To make sure this email is not found by others, you may delete this email after resetting your password. *
+* To protect your account security, we recommend deleting this email after you have reset your password. *
 
 Thank you for keeping your account secure.
 
