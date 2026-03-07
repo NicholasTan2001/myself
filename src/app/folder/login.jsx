@@ -27,12 +27,12 @@ export default function LoginPage() {
         const { email, password } = formData;
 
         if (!email || String(email).trim().length === 0) {
-            setEmailError('*Email address required');
+            setEmailError('* Email address required');
             setSubmitting(false);
             return;
         }
         if (!password || String(password).length === 0) {
-            setPasswordError('*Password required');
+            setPasswordError('* Password required');
             setSubmitting(false);
             return;
         }
@@ -69,7 +69,7 @@ export default function LoginPage() {
             }
 
             if (res.status === 401) {
-                setPasswordError('*Invalid credentials');
+                setPasswordError('* Invalid credentials');
                 setSubmitting(false);
                 return;
             }
@@ -81,7 +81,7 @@ export default function LoginPage() {
             }
         } catch (err) {
             console.error('Login error', err);
-            setPasswordError('*Login failed');
+            setPasswordError('* Login failed');
         }
     };
 
@@ -93,7 +93,7 @@ export default function LoginPage() {
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: "easeOut" }}
-                className="bg-gray-200 bg-opacity-90 rounded-2xl shadow-[0_0_25px_rgba(255,255,255,0.8)] p-10 text-center"
+                className="bg-gray-200 bg-opacity-90 rounded-2xl shadow-[0_0_25px_rgba(255,255,255,0.8)] p-10 text-center w-full max-w-md"
             >
 
                 {/* MySelf Logo */}
@@ -120,7 +120,7 @@ export default function LoginPage() {
                             placeholder="Enter your email"
                             onChange={(e) => { setEmailError(''); handleChange(e); }}
                         />
-                        {emailError && <p className="text-sm text-red-500 text-center">{emailError}</p>}
+                        {emailError && <p className="text-sm text-red-500 text-left">{emailError}</p>}
                     </div>
 
                     <div className="w-full text-sm lg:text-base">
@@ -131,8 +131,13 @@ export default function LoginPage() {
                             placeholder="Enter your password"
                             onChange={(e) => { setPasswordError(''); handleChange(e); }}
                         />
-                        {passwordError && <p className="text-sm text-red-500 text-center">{passwordError}</p>}
+                        {passwordError && <p className="text-sm text-red-500 text-left mb-2">{passwordError}</p>}
                     </div>
+
+                    <p className="text-blue-500 hover:underline text-xs lg:text-sm text-left">
+                        <a href="/forgetpassword">Forget Password ?</a>
+                    </p>
+
                     <ButtonA type="submit" className="mt-5 w-full" disabled={submitting} >
                         {submitting ? "Logging..." : "Login"}
                     </ButtonA>

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import FormInput from "../components/FormInput";
 import ButtonA from "../components/ButtonA";
+import FontA from "../components/FontA";
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
 
@@ -28,7 +29,7 @@ export default function RegisterPage() {
         const { name, email, password } = formData;
 
         if (!name || String(name).trim().length === 0) {
-            setNameError('*Username cannot be empty');
+            setNameError('* Username cannot be empty');
             setSubmitting(false);
             return;
         }
@@ -36,21 +37,21 @@ export default function RegisterPage() {
         const emailStr = String(email || '');
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailStr || !emailRegex.test(emailStr)) {
-            setEmailError('*Please enter a valid email');
+            setEmailError('* Please enter a valid email');
             setSubmitting(false);
 
             return;
         }
 
         if (!password || String(password).length < 6) {
-            setPasswordError('*Password must be at least 6 characters');
+            setPasswordError('* Password must be at least 6 characters');
             setSubmitting(false);
 
             return;
         }
 
         if (formData.confirmPassword !== password) {
-            setConfirmError('*Passwords do not match');
+            setConfirmError('* Passwords do not match');
             setSubmitting(false);
 
             return;
@@ -64,7 +65,7 @@ export default function RegisterPage() {
             });
 
             if (res.status === 409) {
-                setEmailError('*Email already in use');
+                setEmailError('* Email already in use');
                 setSubmitting(false);
 
                 return;
@@ -89,7 +90,7 @@ export default function RegisterPage() {
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: "easeOut" }}
-                className="bg-gray-200 bg-opacity-90 rounded-2xl shadow-[0_0_25px_rgba(255,255,255,0.8)] p-10 text-center"
+                className="bg-gray-200 bg-opacity-90 rounded-2xl shadow-[0_0_25px_rgba(255,255,255,0.8)] p-10 text-center w-full max-w-md"
             >
 
                 {/* MySelf Logo */}
@@ -102,7 +103,9 @@ export default function RegisterPage() {
                 />
 
                 {/* Welcome Text */}
-                <h1 className="text-xl lg:text-2xl font-bold text-gray-800 mb-7 max-w-full truncate">Register to MySelf</h1>
+                <FontA>
+                    <h1 className="text-xl lg:text-2xl font-bold text-gray-800 mb-7 max-w-full truncate">Register to MySelf</h1>
+                </FontA>
 
                 {/* Register Form */}
                 <form onSubmit={handleSubmit}>
@@ -115,7 +118,7 @@ export default function RegisterPage() {
                             onChange={(e) => { setNameError(''); handleChange(e); }}
                         />
                         {nameError && (
-                            <p className="text-sm text-red-500 text-center">{nameError}</p>
+                            <p className="text-sm text-red-500 text-left">{nameError}</p>
                         )}
                     </div>
                     <div className="w-full mb-4 text-sm lg:text-base">
@@ -127,7 +130,7 @@ export default function RegisterPage() {
                             onChange={(e) => { setEmailError(''); handleChange(e); }}
                         />
                         {emailError && (
-                            <p className="text-sm text-red-500 text-center">{emailError}</p>
+                            <p className="text-sm text-red-500 text-left">{emailError}</p>
                         )}
                     </div>
                     <div className="w-full mb-4 text-sm lg:text-base">
@@ -139,7 +142,7 @@ export default function RegisterPage() {
                             onChange={(e) => { setPasswordError(''); handleChange(e); }}
                         />
                         {passwordError && (
-                            <p className="text-sm text-red-500 text-center">{passwordError}</p>
+                            <p className="text-sm text-red-500 text-left">{passwordError}</p>
                         )}
                     </div>
 
@@ -152,7 +155,7 @@ export default function RegisterPage() {
                             onChange={(e) => { setConfirmError(''); handleChange(e); }}
                         />
                         {confirmError && (
-                            <p className="text-sm text-red-500 text-center">{confirmError}</p>
+                            <p className="text-sm text-red-500 text-left">{confirmError}</p>
                         )}
                     </div>
 

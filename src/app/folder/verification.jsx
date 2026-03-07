@@ -17,6 +17,7 @@ export default function VerificationPage() {
     const [otpCode, setOtpCode] = useState("");
     const [error, setError] = useState("");
     const [otp, setOtp] = useState(0);
+    const [submitting, setSubmitting] = useState(false);
 
     {/* Effect: get data from my switchverify api */ }
     useEffect(() => {
@@ -60,7 +61,10 @@ This code is valid for 1 minute only. If the code expires or does not work, the 
 
 Please enter the code as soon as possible to complete your verification.
 
-Thank You`
+Thank you for your cooperation.
+
+Best regards,
+The MySelf Team`
                     })
                 });
             } catch {
@@ -110,19 +114,23 @@ Thank You`
     {/* Function: verify the otp code */ }
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSubmitting(true);
 
         if (!otpCode || otpCode.trim().length === 0) {
             setError("* OTP code required");
+            setSubmitting(false);
             return;
         }
 
         if (otpCode.trim().length != 4) {
             setError("* OTP code just have 4 digits");
+            setSubmitting(false);
             return;
         }
 
         if (isNaN(otpCode)) {
             setError("* OTP code just can be digits only");
+            setSubmitting(false);
             return;
         }
 
@@ -139,11 +147,13 @@ Thank You`
 
             } catch (error) {
                 console.error("Error fetching otpdefault status");
+                setSubmitting(false);
             }
 
         } else {
 
             setError("* OTP code is wrong");
+            setSubmitting(false);
             return;
 
         }
@@ -193,10 +203,12 @@ Thank You`
                                     />
                                 </div>
 
-                                <div>
 
-                                    <ButtonA type="submit" className="mt-7"> Submit</ButtonA>
-
+                                <div className="mt-2 flex justify-end items-center gap-5">
+                                    {submitting && (
+                                        <div className="animate-spin rounded-full h-5 w-5 border-3 border-blue-300 border-solid border-t-transparent"></div>
+                                    )}
+                                    <ButtonA type="submit" className=""> {submitting ? "Submitting..." : "Submit"}</ButtonA>
                                 </div>
 
                             </div>

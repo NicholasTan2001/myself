@@ -115,7 +115,7 @@ export default function MyProfilePage() {
     const handleDeleteAccount = async (e) => {
         e.preventDefault();
         if (!deletePassword.trim()) {
-            setDeleteError("*Password is required");
+            setDeleteError("* Password is required");
             return;
         }
 
